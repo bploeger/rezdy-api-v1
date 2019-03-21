@@ -1,0 +1,48 @@
+{
+  "name": "bploeger/rezdy-api-v1",
+  "type": "library",
+  "description": "PACKAGE UNDER DEVELOPMENT A PHP wrapper for The Rezdy Booking API Ver. 1",
+  "keywords": [
+    "Rezdy"
+  ],
+  "homepage": "",
+  "support": {
+    "issues": "https://github.com/bploeger/rezdy-api-v1/issues",
+    "source": "https://github.com/bploeger/rezdy-api-v1"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Brad Ploeger",
+      "email": "bploeger@arkturis.com",
+      "homepage": ""
+    }
+  ],
+  "require": {
+    "php": ">=5.3.0",
+    "symfony/translation": "~2.6 || ~3.0 || ~4.0",
+    "guzzlehttp/guzzle": "^6.1.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Rezdy\\": "src/Rezdy/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "repositories": {
+      "dev-package": {
+        "type": "path",
+        "url": "c:/users/brad/documents/rezdy-api-v1/src/Rezdy",
+        "options": {
+          "symlink": true
+        }
+      }
+    }
+}
