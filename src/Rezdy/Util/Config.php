@@ -17,7 +17,11 @@ class Config {
          */
         'endpoints' => array(
             'base_url' => 'https://api.rezdy.com/v1/',
-            'availability' => 'availability'
+            'availability_create' => 'availability',
+            'availability_update' => 'availability/',
+            'availability_delete' => 'availability/',
+            'availability_search' => 'availability',
+            'booking_create'      => 'bookings'
         ),
         /**
          * Setting the version fo the application used in Rest Calls when setting the version header

@@ -10,7 +10,10 @@
  */
 
 namespace Rezdy;
-use Rezdy\Services\AvailabilityService;
+
+use Rezdy\Services\AvailabilityServices;
+use Rezdy\Services\BookingServices;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 
@@ -105,13 +108,15 @@ class RezdyAPI
 	/**
      * Class constructor
      * Registers the API key with the RezdyAPI class that will be used for all API calls.
-     * @param string $apiKey - Rezdy API Key
      * @param ClientInterface|null $client - GuzzleHttp Client
      */
 	public function __construct($apiKey, ClientInterface $client = null) {
+           
         $client = $client ?: new Client();
 
-        $this->availabilityService = new AvailabilityService($apiKey, $client);
+        $this->availabilityService = new AvailabilityServices($apiKey, $client);
+        $this->bookingServices = new BookingServices($apiKey, $client);
+
         
     }
 }

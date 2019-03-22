@@ -14,7 +14,7 @@ use GuzzleHttp\Psr7\Request;
  * Super class for all services
  *
  * @package Services
- * @author Constant Contact
+ * @author Brad Ploeger
  */
 abstract class BaseService {
     /**
@@ -47,7 +47,7 @@ abstract class BaseService {
     }
 
     protected function sendRequestWithoutBody($method, $baseUrl, Array $queryParams = array()) {
-        $queryParams["apikey"] = $this->apiKey;
+        $queryParams["apiKey"] = $this->apiKey;
         $request = new Request($method, $baseUrl);
         return $this->client->send($request, [
             'query' => $queryParams,
@@ -55,19 +55,24 @@ abstract class BaseService {
     }
 
     protected function sendRequestWithBody($method, $baseUrl, $body, Array $queryParams = array()) {
-        $queryParams["api_key"] = $this->apiKey;
-        $request = new Request($method, $baseUrl);
-        return $this->client->send($request, [
-            'query' => $queryParams,
-            'json' => $body
-        ]);
+        if ($body->isValidRequest()) {
+            $queryParams["apiKey"] = $this->apiKey;
+            $request = new Request($method, $baseUrl);
+            return $this->client->send($request, [
+                'query' => $queryParams,
+                'json' => $body
+            ]);
+        } else {
+            return $body->getError();
+        }
+        
     }
 
     /**
      * Turns a ClientException into a RezdyException - like magic.
      * @param TransferException $exception - Guzzle TransferException can be one of RequestException,
      *        ConnectException, ClientException, ServerException
-     * @return CtctException
+     * @return RezdyException
      */
     protected function convertException($exception) {
         if ($exception instanceof ClientException || $exception instanceof ServerException) {
@@ -76,7 +81,7 @@ abstract class BaseService {
             $rezdyException = new RezdyException("Something went wrong", $exception->getCode());
         }
         $rezdyException->setUrl($exception->getRequest()->getUri());
-        $rezdyException->setErrors(json_decode($exception->getResponse()->getBody()->getContents()));
+        $rezdyException->setErrors($exception->getResponse()->getBody()->getContents());
         return $rezdyException;
     }
 }
