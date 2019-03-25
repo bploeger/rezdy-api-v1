@@ -37,84 +37,37 @@ class BookingRequest extends BaseRequest {
 								    "supplierAlias"		=> "string",
 								    "supplierId"		=> "integer",
 								    "supplierName"		=> "string",
-								    "surcharge"			=> "float",
-								    "totalAmount"		=> "float",
+								    "surcharge"			=> "numeric",
+								    "totalAmount"		=> "numeric",
 								    "totalCurrency"		=> "enum-currency-types",
-								    "totalDue"			=> "float",
-								    "totalPaid"			=> "float",
-								];		
+								    "totalDue"			=> "numeric",
+								    "totalPaid"			=> "numeric"
+								];	
+
+		// Sets the class mapping for single set items to the request 
+		$this->setClassMap = 	[ 	'Rezdy\Requests\BookingCreatedBy' 		=> 'createdBy', 
+									'Rezdy\Requests\BookingCreditCard'  	=> 'creditCard',
+									'Rezdy\Requests\BookingCustomer' 		=> 'customer',
+									'Rezdy\Requests\BookingResellerUser' 	=> 'resellerUser'
+								]; 
+
+		//Sets the class mapping for multiple item sets to the request 				
+		$this->addClassMap  = 	[	'Rezdy\Requests\BookingField'			=> 'fields',
+									'Rezdy\Requests\BookingItem'			=> 'items',
+									'Rezdy\Requests\BookingPayment'			=> 'payments',
+									'Rezdy\Requests\BookingVoucher'			=> 'vouchers'
+								];	
 
 		if (is_array($params)) {
 			$this->buildFromArray($params);
 		}
 	}
 
-	// Adds an item to the booking
-	public function addItem($item) {		
-		//Verify the Field being added is the correct class 
-		if (get_class($item) == 'Rezdy\Requests\BookingItem') {
-			$this->items[] = $item;
-		}		
+	/* Verifies the request has the minimum amount of information
+	*  to save a booking.  In Rezdy, a booking requires at a minimum,
+	*  a customer and at least one item.
+	*/
+	public function isValidBooking() {
+		return (isset($this->items) && isset($this->customer));		
 	}
-
-	// Sets the Created By Field
-	public function setCreatedBy($createdBy) {		
-		//Verify the CreatedBy being added is the correct class 
-		if (get_class($createdBy) == 'Rezdy\Requests\BookingCreatedBy') {
-			$this->createdBy = $createdBy;
-		}		
-	}
-
-	// Sets the Credit Card Field
-	public function setCreditCard($creditCard) {		
-		//Verify the Credit Card being added is the correct class 
-		if (get_class($creditCard) == 'Rezdy\Requests\BookingCreditCard') {
-			$this->creditCard = $creditCard;
-		}		
-	}
-
-	// Sets the Customer Field
-	public function setCustomer($customer) {	
-		//Verify the Customer being added is the correct class 
-		if (get_class($customer) == 'Rezdy\Requests\BookingCustomer') {
-			$this->customer = $customer;
-		}		
-	}
-
-	// Adds a field to the booking
-	public function addField($field) {		
-		//Verify the Field being added is the correct class 
-		if (get_class($field) == 'Rezdy\Requests\BookingField') {
-			$this->fields[] = $fields;
-		}		
-	}
-
-	// Adds a Payment to the booking
-	public function addPayment($payment) {		
-		//Verify the Payment being added is the correct class 
-		if (get_class($payment) == 'Rezdy\Requests\BookingPayment') {
-			$this->payments[] = $payment;
-		}		
-	}
-
-	// Sets the ResellerUser Field
-	public function setResellerUser($reseller) {		
-		//Verify the Reseller User being added is the correct class 
-		if (get_class($reseller) == 'Rezdy\Requests\BookingResellerUser') {
-			$this->resellerUser = $reseller;
-		}		
-	}
-
-	// Adds a Voucher to the booking
-	public function addVoucher($voucher) {		
-		//Verify the Voucher being added is the correct class 
-		if (get_class($voucher) == 'Rezdy\Requests\BookingVoucher') {
-			$this->vouchers[] = $voucher->string;
-		}		
-	}
-
-
-	public function __toString() {  
-        return json_encode($this);          
-    }
 }

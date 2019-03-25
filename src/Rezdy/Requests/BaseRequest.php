@@ -3,6 +3,8 @@ namespace Rezdy\Requests;
 
 use Carbon\Carbon;
 
+use Rezdy\Exceptions\RezdyException;
+
 /**
  * Super class for all Requests
  *
@@ -11,9 +13,13 @@ use Carbon\Carbon;
  */
 abstract class BaseRequest {
 	
-    protected $requiredParams = array();
-    protected $optionalParams = array();
-    private $error = array();
+    protected $requiredParams = [];
+    protected $optionalParams = [];
+
+    protected $setClassMap = [];
+    protected $addClassMap = [];
+
+    public $error = [];
 
     /**
      * Get the requested value from an array, or return the default
@@ -28,10 +34,10 @@ abstract class BaseRequest {
 
     // Builds the Resource from an Array Provided
     protected function buildFromArray($params = array()) {
-         if (is_array($params) && sizeof($params)) {
+         if (is_array($params) && count($params)) {
             foreach ($params as $param => $value) {                
                 // Verify the parameter is acceptable for the object
-                if ((sizeof($this->requiredParams) && array_key_exists($param, $this->requiredParams)) || array_key_exists($param, $this->optionalParams) ) {                  
+                if ( (count($this->requiredParams) && array_key_exists($param, $this->requiredParams) ) || array_key_exists($param, $this->optionalParams) ) {                  
                     //Set the Paramater
                     $this->$param = $value; 
                 }               
@@ -42,11 +48,25 @@ abstract class BaseRequest {
     // Sets a Resource parameter from a Key-Value pair
     protected function setValue($param, $value) {
        //Verify the parameter is acceptable for the object
-       if ((sizeof($this->requiredParams) && array_key_exists($param, $this->requiredParams)) || array_key_exists($param, $this->optionalParams) ) {                  
-                    //Set the Paramater
-                    $this->$param = $value; 
+       if ((count($this->requiredParams) && array_key_exists($param, $this->requiredParams)) || array_key_exists($param, $this->optionalParams) ) {                  
+                //Set the Paramater
+                $this->$param = $value; 
         }  
     } 
+
+    // Sets parameter values
+    public function set($data, $key = null) {
+         // Checks if passed item is an array
+        if (is_array($data)) {
+            // Recursively process the values
+            foreach ($data as $key => $value) {
+                $this->set($value, $key);
+            }            
+        } else {
+            // Try set the data provided
+            $this->setValue($key, $data);
+        }
+    }
 
     // Verify the Resource Params
     public function verifyParams() {  
@@ -61,8 +81,7 @@ abstract class BaseRequest {
         // Check for optional params and their type
         foreach ($this->optionalParams as $param => $type) {            
             // Check if the Resource has an optional param
-            if(isset($this->$param)) {                
-                
+            if(isset($this->$param)) {      
                 // Check the param to ensure it is the valid type
                 $this->checkType($param, $type);
             }                   
@@ -76,21 +95,21 @@ abstract class BaseRequest {
                 // Verify the data is a string
                 case 'string':
                     if(!is_string($this->$param)) { 
-                        $this->error[] = $this->$param . ' IS NOT A STRING';
+                        $this->error[] = $param . ' IS NOT A STRING';
                     }
                     break;  
 
                 // Verify the data is a integer
                 case 'integer':
                     if(!is_int($this->$param)) {                         
-                        //Try to Fix the Issue
-                        $param = intval($this->$param);                        
-                        if (is_int($param)) {
+                        // Try to fix the issue
+                        $newParam = intval($this->$param);                        
+                        if (is_int($newParam)) {
                             //Fix the Value
-                            $this->$param = $param;                        
+                            $this->$param = $newParam;                        
                         } else {
                            // It Cannot be Fixed
-                           $this->error[] = $this->$param . ' IS NOT AN INTEGER'; 
+                           $this->error[] = $param . ' IS NOT AN INTEGER'; 
                        }                        
                     }
                     break;  
@@ -98,14 +117,39 @@ abstract class BaseRequest {
                 // Verify the data is boolean
                 case 'boolean':
                     if(!is_bool($this->$param)) { 
-                        $this->error[] = $this->$param . ' IS NOT AN BOOLEAN';
-                    }
+                        
+                        // Try to fix the issue
+                        if (strtoupper($this->$param) == 'FALSE' || $this->$param = 0) {
+                            // Handles common errors that recasting would not handle properly
+                            $newParam = false;
+                        } else {
+                            // Try to recast the value
+                            $newParam = (bool) $this->param; 
+                        }
+
+                        if (is_bool($newParam)) {
+                            //Fix the Value
+                            $this->param = $newParam;  
+                        } else {
+                            // It Cannot be Fixed
+                           $this->error[] = $param . ' IS NOT AN BOOLEAN';
+                       }                       
+                        
+                    }                    
                     break;  
 
                 // Verify the data is numeric
                 case 'numeric':
-                    if(!is_numeric($this->$param)) { 
-                        $this->error[] = $this->$param . ' IS NOT NUMERIC';
+                    if(!is_numeric($this->$param)) {                                    
+                        //Try and fix the issue
+                        $newParam = (float) $this->param;
+
+                        // Check the fix
+                        if (is_numeric($newParam)) {
+                            $this->$param = $newParam;
+                        } else {
+                            $this->error[] = $param . ' IS NOT NUMERIC';
+                        }
                     }
                     break;  
 
@@ -114,7 +158,7 @@ abstract class BaseRequest {
                     
                     // Verify it is a String First
                     if(!is_string($this->$param)) { 
-                        $this->error[] = $this->$param . ' IS NOT A STRING';
+                        $this->error[] = $param . ' IS NOT A STRING';
                     }
                     // Parse it with Carbon
                     $dateTime = Carbon::parse($this->$param);
@@ -129,13 +173,13 @@ abstract class BaseRequest {
                                 //Fix it
                                 $this->$param = $newParam;                                
                             } else {
-                                $this->error = $this->$param . ' IS NOT IN THE PROPER ISO8601 FORMAT';
+                                $this->error = $param . ' IS NOT IN THE PROPER ISO8601 FORMAT';
                             }                          
                         }
 
                     } else {
                         // the string was able to be parsed and is invalid
-                        $this->error[] = $this->$param . ' COULD NOT BE PARSED';
+                        $this->error[] = $param . ' COULD NOT BE PARSED';
                     }
 
                     break;  
@@ -143,7 +187,7 @@ abstract class BaseRequest {
                 case 'date-time':
                     // Verify it is a String First
                     if(!is_string($this->$param)) { 
-                        $this->error[] = $this->$param . ' IS NOT A STRING';
+                        $this->error[] = $param . ' IS NOT A STRING';
                     }
                     // Parse it with Carbon
                     $dateTime = Carbon::parse($this->$param);
@@ -159,22 +203,22 @@ abstract class BaseRequest {
                                 $this->$param = $newParam;
                             } else {
                                 // the the value is invalis
-                                $this->error[] = $this->$param . ' IS NOT IN THE PROPER DATE-TIME FORMAT';                             
+                                $this->error[] = $param . ' IS NOT IN THE PROPER DATE-TIME FORMAT';                             
                             }
                         }
                     } else {
                         // The string was able to be parsed and is invalid
-                        $this->error[] = $this->$param . ' COULD NOT BE PARSED';
+                        $this->error[] = $param . ' COULD NOT BE PARSED';
                     }
                     break;
 
                 case 'priceOptionArray':
                     if(!is_array($this->$param)) { 
-                        $this->error[] = $this->$param . ' IS NOT AN ARRAY';
+                        $this->error[] = $param . ' IS NOT AN PRICE OPTION ARRAY';
                     }
                     foreach ($this->$param as $obj) {
                         if (get_class($obj) !== 'Rezdy\Resources\PriceOption') {
-                            $this->error[] = $this->$param . ' IS NOT A PRICE OPTION CLASS';
+                            $this->error[] = $param . ' IS NOT A PRICE OPTION CLASS';
                         }
                     }
                     break;  
@@ -190,7 +234,7 @@ abstract class BaseRequest {
                                                 'Date'
                                             ];                        
                         if (!in_array($this->$param, $acceptable_field_types)) {
-                            $this->error[] = $this->$param . ' DOES NOT HAVE AN ACCEPTABLE FIELD VALUE';
+                            $this->error[] = $param . ' DOES NOT HAVE AN ACCEPTABLE FIELD VALUE';
                         }
                     break;  
 
@@ -207,7 +251,7 @@ abstract class BaseRequest {
                                                 'PRODUCT'
                                             ];                        
                         if (!in_array($this->$param, $acceptable_field_types)) {
-                            $this->error[] = $this->$param . ' DOES NOT HAVE AN ACCEPTABLE VOUCHER VALUE TYPE';
+                            $this->error[] = $param . ' DOES NOT HAVE AN ACCEPTABLE VOUCHER VALUE TYPE';
                         }
                     break;  
 
@@ -221,7 +265,7 @@ abstract class BaseRequest {
                                                 'EXPIRED'
                                             ];                        
                         if (!in_array($this->$param, $acceptable_field_types)) {
-                            $this->error[] = $this->$param . ' DOES NOT HAVE AN ACCEPTABLE VOUCHER VALUE TYPE';
+                            $this->error[] = $param . ' DOES NOT HAVE AN ACCEPTABLE VOUCHER VALUE TYPE';
                         }
                     break;  
 
@@ -237,7 +281,7 @@ abstract class BaseRequest {
                                                 'JCB'
                                             ];                        
                         if (!in_array($this->$param, $acceptable_field_types)) {
-                            $this->error[] = $this->$param . ' DOES NOT HAVE AN ACCEPTABLE CREDIT CARD TYPE VALUE';
+                            $this->error[] = $param . ' DOES NOT HAVE AN ACCEPTABLE CREDIT CARD TYPE VALUE';
                         }
                     break;  
 
@@ -249,7 +293,7 @@ abstract class BaseRequest {
                                                 'FEMALE'
                                             ];                        
                         if (!in_array($this->$param, $acceptable_field_types)) {
-                            $this->error[] = $this->$param . ' DOES NOT HAVE AN ACCEPTABLE CUSTOMER GENDER VALUE';
+                            $this->error[] = $param . ' DOES NOT HAVE AN ACCEPTABLE CUSTOMER GENDER VALUE';
                         }
                     break;  
 
@@ -263,7 +307,7 @@ abstract class BaseRequest {
                                                 'MISS'
                                             ];                        
                         if (!in_array($this->$param, $acceptable_field_types)) {
-                            $this->error[] = $this->$param . ' DOES NOT HAVE AN ACCEPTABLE CUSTOMER TITLE VALUE';
+                            $this->error[] = $param . ' DOES NOT HAVE AN ACCEPTABLE CUSTOMER TITLE VALUE';
                         }
                     break;  
 
@@ -276,7 +320,7 @@ abstract class BaseRequest {
                                                 'QUANTITY'
                                             ];                        
                         if (!in_array($this->$param, $acceptable_field_types)) {
-                            $this->error[] = $this->$param . ' DOES NOT HAVE AN ACCEPTABLE EXTRA PRICE TYPE VALUE';
+                            $this->error[] = $param . ' DOES NOT HAVE AN ACCEPTABLE EXTRA PRICE TYPE VALUE';
                         }
                     break; 
 
@@ -293,7 +337,7 @@ abstract class BaseRequest {
                                                 'ALIPAY'
                                             ];                        
                         if (!in_array($this->$param, $acceptable_field_types)) {
-                            $this->error[] = $this->$param . ' DOES NOT HAVE AN ACCEPTABLE EXTRA PRICE TYPE VALUE';
+                            $this->error[] = $param . ' DOES NOT HAVE AN ACCEPTABLE EXTRA PRICE TYPE VALUE';
                         }
                     break;   
 
@@ -328,7 +372,7 @@ abstract class BaseRequest {
                                                   'UYI','ZMW','GHC','GGP','IMP','JEP','TRL',
                                                   'TVD'];                        
                         if (!in_array($this->$param, $acceptable_field_types)) {
-                            $this->error[] = $this->$param . ' DOES NOT HAVE AN ACCEPTABLE CURRENCY TYPE VALUE';
+                            $this->error[] = $param . ' DOES NOT HAVE AN ACCEPTABLE CURRENCY TYPE VALUE';
                         }
                     break;
 
@@ -341,7 +385,7 @@ abstract class BaseRequest {
                                                 'REZDY'
                                             ];                        
                         if (!in_array($this->$param, $acceptable_field_types)) {
-                            $this->error[] = $this->$param . ' DOES NOT HAVE AN ACCEPTABLE PAYMENT RECIPIENT TYPE VALUE';
+                            $this->error[] = $param . ' DOES NOT HAVE AN ACCEPTABLE PAYMENT RECIPIENT TYPE VALUE';
                         }
                     break;     
 
@@ -358,7 +402,7 @@ abstract class BaseRequest {
                                                 'API' 
                                             ];                        
                         if (!in_array($this->$param, $acceptable_field_types)) {
-                            $this->error[] = $this->$param . ' DOES NOT HAVE AN ACCEPTABLE SOURCE TYPE VALUE';
+                            $this->error[] = $param . ' DOES NOT HAVE AN ACCEPTABLE SOURCE TYPE VALUE';
                         }
                     break;  
 
@@ -376,27 +420,112 @@ abstract class BaseRequest {
                                                 'ABANDONED_CART' 
                                             ];                        
                         if (!in_array($this->$param, $acceptable_field_types)) {
-                            $this->error[] = $this->$param . ' DOES NOT HAVE AN ACCEPTABLE SOURCE TYPE VALUE';
+                            $this->error[] = $param . ' DOES NOT HAVE AN ACCEPTABLE SOURCE TYPE VALUE';
                         }
                     break;       
 
                 default:
                     // The value type is not on our list
-                    $this->error[] = $this->type . ' IS NOT A VALID TYPE FOR ' . $this->param;
+                    $this->error[] = $type . ' IS NOT A VALID TYPE FOR ' . $param;
                     break;
             }
     }
 
-    public function isValidRequest() {
-        $this->verifyParams();
-        if (sizeof($this->error)) {
-            return false;
+    // Attached an item in the Request based on the class of item passed to the function
+    public function attach($data) {
+        
+        // Check if the value passed was an array
+        if (is_array($data)) {
+            // Go through each item recursively
+            foreach ($data as $item) {
+                $this->attach($item);
+            }       
         } else {
-            return true;
-        }
+            
+            // Check the class of the data passed
+            $class = get_class($data);
+
+            // Check if is a single item class
+            if (array_key_exists($class, $this->setClassMap)) {
+                
+                // Use the Lookup Array
+                $type = $this->setClassMap[$class];
+                
+                // Set the value
+                $this->$type = $data;
+            
+            // Check if is a multiple item class
+            } elseif(array_key_exists($class, $this->addClassMap)) {
+               
+                // Use the Lookup Array
+                $type = $this->addClassMap[$class];
+              
+                // Handles a Booking Voucher item which is only an array of strings.
+                if ($class == 'Rezdy\Requests\BookingVoucher') {  
+                    
+                    // Set the value
+                    $this->$type[] = $data->string;         
+                } else {
+                    
+                    // Set the value
+                    $this->$type[] = $data;
+                }
+            }
+        }       
+    }
+
+    public function isValidRequest() {
+        
+        // Verify all the parameters
+        $this->verifyParams();
+
+        // Check for Errors        
+        return (count($this->error) == 0);        
     }
 
     public function getError() {
         return json_encode($this->error);
+    }
+    public function setError($error) {
+        if (is_array($error)) {
+            foreach ($error as $item) {
+                $this->setError($error);
+            }
+        } 
+        $this->error[] = $error;
+    }
+
+    public function appendTransferErrors(RezdyException $e) {
+        foreach ($e->getErrors() as $error) {
+            $this->setError($error->requestStatus->error->errorMessage);
+        }        
+    }
+
+    public function asArray() {
+        // Recast the Object as an array
+        $rawArray = (array) $this;
+
+        // Create an empty array for the output 
+        $outputArray = array();
+        
+        // Cycle through the raw array
+        foreach ($rawArray as $key => $value) {
+            if (array_key_exists($key, $this->requiredParams) || array_key_exists($key, $this->optionalParams)) {
+                if (is_array($value)) {
+                    foreach ($value as $item) {
+                        $outputArray[][$key] = $item;
+                    }
+                } else {
+                    $outputArray[][$key] = $value;
+                }
+                
+            }
+        }
+
+        return $outputArray;
+    }
+
+    public function __toString() {  
+        return json_encode($this);          
     }
 }

@@ -18,8 +18,13 @@ class RezdyException extends Exception {
         return $this->errors;
     }
 
-    public function setErrors(array $errors) {
-        $this->errors = $errors;
+    public function setErrors($errors) {
+
+        if (is_array($errors)) {
+            $this->errors = $errors;
+        } else {
+            $this->errors[] = $errors;
+        }
     }
 
     public function setUrl($url) {

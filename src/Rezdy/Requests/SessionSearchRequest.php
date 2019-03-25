@@ -26,7 +26,7 @@ class SessionSearchRequest extends BaseRequest {
 									);		
 
 		if (is_array($params)) {
-			$this->buildFromArray($params);
+			$this->customBuildFromArray($params);
 		}	
 	}
 
@@ -38,4 +38,19 @@ class SessionSearchRequest extends BaseRequest {
             return '';
         }        
     }
+
+    // Builds the Resource from an Array Provided
+    private function customBuildFromArray($params = array()) {
+         if (is_array($params) && sizeof($params)) {
+            foreach ($params as $param => $value) {                
+               
+                // Verify the parameter is acceptable for the object
+                if ((sizeof($this->requiredParams) && array_key_exists($param, $this->requiredParams)) || array_key_exists($param, $this->optionalParams) ) {                  
+                    
+                    // Set the Parameter                 
+                       $this->$param = $value;                                        
+                }               
+            }   
+        }
+    } 
 }

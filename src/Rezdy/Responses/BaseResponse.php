@@ -26,8 +26,12 @@ abstract class BaseResponse {
 		if (!$this->responseBody->requestStatus->success) {
 			$this->hadError = true;
 			$this->errorMessage = $this->responseBody->requestStatus->error->errorMessage;
-		}
-		
+		}		
+	}
+
+	public function setErrorManually($error) {
+		$this->hadError = true;
+		$this->errorMessage = $error;
 	}
 
 	public function wasSuccessful() {

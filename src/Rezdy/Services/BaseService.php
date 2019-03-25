@@ -3,6 +3,9 @@ namespace Rezdy\Services;
 
 use Rezdy\Exceptions\RezdyException;
 use Rezdy\Util\Config;
+
+use Rezdy\Requests\EmptyRequest;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
@@ -46,26 +49,35 @@ abstract class BaseService {
         return $this->client;
     }
 
-    protected function sendRequestWithoutBody($method, $baseUrl, Array $queryParams = array()) {
-        $queryParams["apiKey"] = $this->apiKey;
+    protected function sendRequestWithoutBody($method, $baseUrl, $queryParams = array()) {        
+        $queryParams[]["apiKey"] = $this->apiKey;   
+
+        //Build the query string 
+        $query = '';
+        foreach ($queryParams as $index => $param) {
+            foreach ($param as $key => $value) {
+                $query .= $key . "=" . $value . '&';
+            }            
+        }
+        $query = trim($query, '&');
+              
         $request = new Request($method, $baseUrl);
         return $this->client->send($request, [
-            'query' => $queryParams,
+            'query' => $query,
         ]);
     }
 
-    protected function sendRequestWithBody($method, $baseUrl, $body, Array $queryParams = array()) {
+    protected function sendRequestWithBody($method, $baseUrl, $body = null, $queryParams = array()) {
         if ($body->isValidRequest()) {
             $queryParams["apiKey"] = $this->apiKey;
-            $request = new Request($method, $baseUrl);
+            $request = new Request($method, $baseUrl);            
             return $this->client->send($request, [
                 'query' => $queryParams,
                 'json' => $body
             ]);
         } else {
             return $body->getError();
-        }
-        
+        }        
     }
 
     /**
@@ -81,7 +93,22 @@ abstract class BaseService {
             $rezdyException = new RezdyException("Something went wrong", $exception->getCode());
         }
         $rezdyException->setUrl($exception->getRequest()->getUri());
-        $rezdyException->setErrors($exception->getResponse()->getBody()->getContents());
+
+        // Pull the Error Message
+        $errors = $exception->getResponse()->getBody()->getContents();
+
+        // Put the Error Messages into the Exception
+        $rezdyException->setErrors(json_decode($errors));
         return $rezdyException;
+    }
+
+    public function returnExceptionAsErrors($request, $e) {        
+        // Convert the Exception to a Rezdy\Exceptions\RezdyException Class            
+        $rezdyException = $this->convertException($e);
+        
+        // Append the Error Messages from the Exception to the Original Request
+        $request->appendTransferErrors($rezdyException);
+        
+        return $request;
     }
 }

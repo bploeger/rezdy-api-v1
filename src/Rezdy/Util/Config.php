@@ -21,7 +21,10 @@ class Config {
             'availability_update' => 'availability/',
             'availability_delete' => 'availability/',
             'availability_search' => 'availability',
-            'booking_create'      => 'bookings'
+            'booking_create'      => 'bookings',
+            'booking_get'         => 'bookings/',
+            'booking_update'      => 'bookings/',
+            'booking_delete'      => 'bookings/'
         ),
         /**
          * Setting the version fo the application used in Rest Calls when setting the version header

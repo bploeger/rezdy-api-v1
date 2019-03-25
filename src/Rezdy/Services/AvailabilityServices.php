@@ -6,6 +6,7 @@ use Rezdy\Util\Config;
 use Rezdy\Requests\SessionCreateRequest;
 use Rezdy\Requests\SessionUpdateRequest;
 use Rezdy\Requests\SessionSearchRequest;
+use Rezdy\Requests\EmptyRequest;
 
 use Rezdy\Responses\ResponseSession;
 use Rezdy\Responses\ResponseNoData;
@@ -34,7 +35,7 @@ class AvailabilityServices extends BaseService {
 		try {
             $response = parent::sendRequestWithBody('POST', $baseUrl, $session);
         } catch (TransferException $e) {
-        	// Ignore the Error        	
+        	return $this->returnExceptionAsErrors($session, $e);             	
         }    
         
         // Handle the Response
@@ -46,7 +47,7 @@ class AvailabilityServices extends BaseService {
 		try {
             $response = parent::sendRequestWithBody('PUT', $baseUrl, $session);
         } catch (TransferException $e) {
-        	// Ignore the Error        	
+        	return $this->returnExceptionAsErrors($session, $e);           	
         }    
         
         // Handle the Response
@@ -54,29 +55,29 @@ class AvailabilityServices extends BaseService {
 	}
 
 	public function delete($sessionId) {
+        $session = new EmptyRequest;
 		$baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.availability_delete') . $sessionId;
 		
 		try {
             $response = parent::sendRequestWithoutBody('DELETE', $baseUrl);
         } catch (TransferException $e) {
-        	// Ignore the Error        	
+        	return $this->returnExceptionAsErrors($session, $e);            	
         }    
         
         // Handle the Response
-        return new ResponseNoData($response->getBody());
+        return new ResponseNoData('The session was successfully deleted');
 	}
 
-    public function search(SessionSearchRequest $session) {
+    public function search(SessionSearchRequest $search) {
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.availability_search');
         try {
-            $response = parent::sendRequestWithOutBody('GET', $baseUrl, (array) $session);
+            $response = parent::sendRequestWithOutBody('GET', $baseUrl, $search->asArray());
         } catch (TransferException $e) {
-            // Ignore the Error       
+            dd($e);
+            return $this->returnExceptionAsErrors($search, $e);      
         }    
         
         // Handle the Response
         return new ResponseSessionList($response->getBody());
     }
-
-
 }

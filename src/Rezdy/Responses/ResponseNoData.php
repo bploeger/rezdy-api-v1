@@ -11,9 +11,11 @@ namespace Rezdy\Responses;
 
 class ResponseNoData extends BaseResponse {
 
+	public $message;
+
 	public function __construct($response) {
 		
-		$this->parseResponse($response);
+		$this->message = $response;
 
 	}
 

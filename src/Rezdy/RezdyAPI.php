@@ -28,82 +28,81 @@ class RezdyAPI
 {
 	/**
      * Handles interaction with availability management
-     * @var availabilityServices
-     * @todo WORKING HERE
+     * @var availability
      */
-	public $availabiltyServices;
+	public $availability;
 
 	/**
      * Handles interaction with booking management
-     * @var bookingServices
+     * @var bookings
      */
-	public $bookingServices;
+	public $bookings;
 
 	/**
      * Handles interaction with category management
-     * @var categoryServices
+     * @var categories
      */
-	public $categoryServices;
+	public $categories;
 
 	/**
      * Handles interaction with company management
-     * @var companyServices
+     * @var companies
      */
-	public $companyServices;
+	public $companies;
 
 	/**
      * Handles interaction with customer management
-     * @var customerServices
+     * @var customer
      */
-	public $customerServices;
+	public $customers;
 
 	/**
      * Handles interaction with extras management
-     * @var extraServices
+     * @var extra
      */
-	public $extraServices;
+	public $extra;
 
 	/**
      * Handles interaction with manifest management
-     * @var manifestServices
+     * @var manifest
      */
-	public $manifestServices;
+	public $manifest;
 
 	/**
      * Handles interaction with pickupList management
-     * @var pickupListServices
+     * @var pickupList
      */
-	public $pickupListServices;
+	public $pickupList;
 
 	/**
      * Handles interaction with product management
-     * @var productServices
+     * @var product
      */
-	public $productServices;
+	public $products;
 
 	/**
      * Handles interaction with rate management
-     * @var rateServices
+     * @var rates
      */
-	public $rateServices;
+	public $rates;
 
 	/**
      * Handles interaction with resource management
-     * @var resourceServices
+     * @var resources
      */
-	public $resourceServices;
+	public $resources;
 
 	/**
      * Handles interaction with rezdyConnect management
-     * @var rezdyConnectServices
+     * @var rezdyConnects
      */
-	public $rezdyConnectServices;
+	public $rezdyConnect;
 
 	/**
      * Handles interaction with voucher management
-     * @var voucherServices
+     * @var vouchers
      */
-	public $voucherServices;
+	public $vouchers;
 
 	/**
      * Class constructor
@@ -114,8 +113,9 @@ class RezdyAPI
            
         $client = $client ?: new Client();
 
-        $this->availabilityService = new AvailabilityServices($apiKey, $client);
-        $this->bookingServices = new BookingServices($apiKey, $client);
+        //Register the Service Handlers to the API object
+        $this->availability = new AvailabilityServices($apiKey, $client);
+        $this->bookings = new BookingServices($apiKey, $client);
 
         
     }
