@@ -11,28 +11,41 @@ class Config {
     /**
      * @var array - array of configuration properties
      */
-    private static $props = array(
+    private static $props = [
         /**
          * REST endpoints
          */
-        'endpoints' => array(
-            'base_url' => 'https://api.rezdy.com/v1/',
-            'availability_create' => 'availability',
-            'availability_update' => 'availability/',
-            'availability_delete' => 'availability/',
-            'availability_search' => 'availability',
-            'booking_create'      => 'bookings',
-            'booking_get'         => 'bookings/',
-            'booking_update'      => 'bookings/',
-            'booking_delete'      => 'bookings/'
-        ),
+        'endpoints' =>  [   'base_url'                  => 'https://api.rezdy.com/v1/',
+                            'availability_create'       => 'availability',
+                            'availability_update'       => 'availability/',
+                            'availability_delete'       => 'availability/',
+                            'availability_search'       => 'availability',
+                            'booking_create'            => 'bookings',
+                            'booking_get'               => 'bookings/',
+                            'booking_update'            => 'bookings/',
+                            'booking_delete'            => 'bookings/',
+                            'booking_search'            => 'bookings',
+                            'booking_quote'             => 'bookings/quote',
+                            'category_search'           => 'categories',
+                            'category_get'              => 'categories/',
+                            'category_list'             => 'categories/%s/products',
+                            'category_add_product'      => 'categories/%s/products/%s',
+                            'category_remove_product'   => 'categories/%s/products/%s',
+                            'company_get'               => 'companies/alias/%s',
+                            'customer_create'           => 'customers',
+                            'customer_get'              => 'customers/',
+                            'customer_delete'           => 'customers/',
+                            'customer_search'           => 'customers',
+                            'extra_create'              => 'extra',
+                            'extra_get'                 => 'extra/',
+                            'extra_update'              => 'extra/',
+                        ],
         /**
          * Setting the version fo the application used in Rest Calls when setting the version header
          */
-        'settings' => array(
-            'version' => '1.x.x'
-        ),   
-    );
+        'settings' =>   [   'version' => '1.x.x'
+                        ],       
+    ];
 
     /**
      * Get a configuration property given a specified location, example usage: Config::get('endpoints.base_url')

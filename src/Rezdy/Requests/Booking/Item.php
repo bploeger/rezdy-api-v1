@@ -1,5 +1,7 @@
 <?php
-namespace Rezdy\Requests;
+namespace Rezdy\Requests\Booking;
+
+use Rezdy\Requests\BaseRequest;
 
 /**
  * Creates and verifies the BookingItem request
@@ -7,7 +9,7 @@ namespace Rezdy\Requests;
  * @package Requests
  * @author Brad Ploeger
  */
-class BookingItem extends BaseRequest {
+class Item extends BaseRequest {
 
 		public function __construct($params = '') {
 			
@@ -28,12 +30,12 @@ class BookingItem extends BaseRequest {
 									];
 
 			// Sets the class mapping for single set items to the request 
-			$this->setClassMap =	[ 	'Rezdy\Requests\BookingItemPickupLocation'	=> 'pickupLocation'
+			$this->setClassMap =	[ 	'Rezdy\Requests\Booking\ItemPickupLocation'	=> 'pickupLocation'
 									]; 
 
 			//Sets the class mapping for multiple item sets to the request 				
-			$this->addClassMap  =	[	'Rezdy\Requests\BookingItemExtra'		=> 'extras',
-										'Rezdy\Requests\BookingItemQuantity'	=> 'quantities'
+			$this->addClassMap  =	[	'Rezdy\Requests\Booking\ItemExtra'			=> 'extras',
+										'Rezdy\Requests\Booking\ItemQuantity'		=> 'quantities'
 									];	
 
 			if (is_array($params)) {

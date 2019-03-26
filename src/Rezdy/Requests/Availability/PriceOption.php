@@ -1,5 +1,8 @@
 <?php
-namespace Rezdy\Requests;
+namespace Rezdy\Requests\Availability;
+
+use Rezdy\Requests\BaseRequest;
+use Rezdy\Requests\RequestInterface;
 
 /**
  * Creates and verifies the PriceOption request
@@ -7,7 +10,7 @@ namespace Rezdy\Requests;
  * @package Resources
  * @author Brad Ploeger
  */
-class SessionPriceOption extends BaseRequest {
+class PriceOption extends BaseRequest implements RequestInterface {
 
 		public function __construct($params = '') {
 			
@@ -16,7 +19,8 @@ class SessionPriceOption extends BaseRequest {
 											'label'			=> 'string',
 											'maxQuantity'	=> 'integer',
 											'minQuantity'	=> 'integer',
-											'price'			=> 'numeric',											
+											'price'			=> 'numeric',
+											'priceGroupType'=> 'enum-price-group-type'											
 										);
 
 			if (is_array($params)) {
@@ -24,11 +28,7 @@ class SessionPriceOption extends BaseRequest {
 			}	
 		}
 
-		public function setPriceGroupType($type) {
-			$allowedPriceGroupTypes = ['EACH', 'TOTAL'];
-			if (in_array($type, $allowedPriceGroupTypes)) {
-				$this->priceGroupType = $type;
-			}
-		}	
-
+		public function isValid() {
+			return $this->isValidRequest();
+		}
 }

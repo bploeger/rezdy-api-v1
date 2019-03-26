@@ -13,6 +13,10 @@ namespace Rezdy;
 
 use Rezdy\Services\AvailabilityServices;
 use Rezdy\Services\BookingServices;
+use Rezdy\Services\CategoryServices;
+use Rezdy\Services\CompanyServices;
+use Rezdy\Services\CustomerServices;
+use Rezdy\Services\ExtraServices;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -116,7 +120,9 @@ class RezdyAPI
         //Register the Service Handlers to the API object
         $this->availability = new AvailabilityServices($apiKey, $client);
         $this->bookings = new BookingServices($apiKey, $client);
-
-        
+        $this->categories = new CategoryServices($apiKey, $client);
+        $this->companies = new CompanyServices($apiKey, $client);     
+        $this->customers = new CustomerServices($apiKey, $client);   
+        $this->extra = new ExtraServices($apiKey, $client);   
     }
 }

@@ -1,5 +1,7 @@
 <?php
-namespace Rezdy\Requests;
+namespace Rezdy\Requests\Booking;
+
+use Rezdy\Requests\BaseRequest;
 
 /**
  * Creates and verifies the BookingResellerUser request
@@ -7,7 +9,7 @@ namespace Rezdy\Requests;
  * @package Requests
  * @author Brad Ploeger
  */
-class BookingResellerUser extends BaseRequest {
+class ResellerUser extends BaseRequest {
 
 		public function __construct($params = '') {
 			

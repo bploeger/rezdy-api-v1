@@ -1,5 +1,7 @@
 <?php
-namespace Rezdy\Requests;
+namespace Rezdy\Requests\Booking;
+
+use Rezdy\Requests\BaseRequest;
 
 /**
  * Creates and verifies the BookingItemVoucher request
@@ -7,7 +9,7 @@ namespace Rezdy\Requests;
  * @package Requests
  * @author Brad Ploeger
  */
-class BookingItemVoucher extends BaseRequest {
+class ItemVoucher extends BaseRequest {
 
 		public function __construct($params = '') {
 			
@@ -18,9 +20,9 @@ class BookingItemVoucher extends BaseRequest {
                     						"internalReference"	=> "string",
                     						"issueDate"			=> "date-time",
                     						"sourceOrder"		=> "string",
-                    						"status"			=> "enum-voucher-status",
+                    						"status"			=> "enum.voucher-status",
                     						"value"				=> "float",
-                    						"valueType"			=> "enum-voucher-value-type"         								
+                    						"valueType"			=> "enum.voucher-value-type"         								
 									];
 
 			if (is_array($params)) {

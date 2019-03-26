@@ -3,14 +3,14 @@ namespace Rezdy\Services;
 
 use Rezdy\Util\Config;
 
-use Rezdy\Requests\SessionCreateRequest;
-use Rezdy\Requests\SessionUpdateRequest;
-use Rezdy\Requests\SessionSearchRequest;
+use Rezdy\Requests\Availability\CreateRequest;
+use Rezdy\Requests\Availability\UpdateRequest;
+use Rezdy\Requests\Availability\SearchRequest;
 use Rezdy\Requests\EmptyRequest;
 
-use Rezdy\Responses\ResponseSession;
+use Rezdy\Responses\ResponseStandard;
 use Rezdy\Responses\ResponseNoData;
-use Rezdy\Responses\ResponseSessionList;
+use Rezdy\Responses\ResponseList;
 
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Psr7;
@@ -30,7 +30,7 @@ class AvailabilityServices extends BaseService {
      * @throws RezdyException
      */
 
-	public function create(SessionCreateRequest $session) {
+	public function create(CreateRequest $session) {
 		$baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.availability_create');
 		try {
             $response = parent::sendRequestWithBody('POST', $baseUrl, $session);
@@ -39,10 +39,10 @@ class AvailabilityServices extends BaseService {
         }    
         
         // Handle the Response
-        return new ResponseSession($response->getBody());
+        return new ResponseStandard($response->getBody(), 'session');
 	}
 
-	public function update(SessionUpdateRequest $session) {
+	public function update(UpdateRequest $session) {
 		$baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.availability_update') . $session->sessionId;		
 		try {
             $response = parent::sendRequestWithBody('PUT', $baseUrl, $session);
@@ -51,7 +51,7 @@ class AvailabilityServices extends BaseService {
         }    
         
         // Handle the Response
-        return new ResponseSession($response->getBody());
+        return new ResponseStandard($response->getBody(), 'session');
 	}
 
 	public function delete($sessionId) {
@@ -68,16 +68,16 @@ class AvailabilityServices extends BaseService {
         return new ResponseNoData('The session was successfully deleted');
 	}
 
-    public function search(SessionSearchRequest $search) {
+    public function search(SearchRequest $search) {
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.availability_search');
         try {
-            $response = parent::sendRequestWithOutBody('GET', $baseUrl, $search->asArray());
+            $response = parent::sendRequestWithOutBody('GET', $baseUrl, $search->toArray());
         } catch (TransferException $e) {
             dd($e);
             return $this->returnExceptionAsErrors($search, $e);      
         }    
         
         // Handle the Response
-        return new ResponseSessionList($response->getBody());
+        return new ResponseList($response->getBody(), 'sessions');
     }
 }

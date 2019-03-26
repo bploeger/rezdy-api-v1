@@ -1,5 +1,7 @@
 <?php
-namespace Rezdy\Requests;
+namespace Rezdy\Requests\Booking;
+
+use Rezdy\Requests\BaseRequest;
 
 /**
  * Creates and verifies the BookingField request
@@ -7,12 +9,12 @@ namespace Rezdy\Requests;
  * @package Requests
  * @author Brad Ploeger
  */
-class BookingField extends BaseRequest {
+class Field extends BaseRequest {
 
 		public function __construct($params = '') {
 			
 			//Set the optional properties of the object and the required type
-			$this->optionalParams = [		"fieldType"				=> "enum-field-type",
+			$this->optionalParams = [		"fieldType"				=> "enum.field-type",
             								"label"					=> "string",
             								"listOptions"			=> "string",
             								"requiredPerBooking"	=> "boolean",

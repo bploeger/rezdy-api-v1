@@ -1,43 +1,40 @@
 <?php
-namespace Rezdy\Requests;
+namespace Rezdy\Requests\Booking;
+
+use Rezdy\Requests\BaseRequest;
+use Rezdy\Requests\RequestInterface;
 
 /**
- * Creates and verifies the SessionSearchRequest resource
+ * Creates and verifies the BookingSearchRequest resource
  *
- * @package Resources
+ * @package Requests
  * @author Brad Ploeger
  */
-class SessionSearchRequest extends BaseRequest {	
+class SearchRequest extends BaseRequest implements RequestInterface {	
 
 	public function __construct($params = '') {
 		
-		//Set the required properties of the object and the required datatype
-		$this->requiredParams = array(	'productCode' 		=> 'string'								
-									);		
-
 		//Set the optional properties of the object and the required datatype
-		$this->optionalParams = array(	'startTime' 		=> 'ISO8601', 
-										'endTime'			=> 'ISO8601',
-										'startTimeLocal'	=> 'date-time',
-										'endTimeLocal'		=> 'date-time',	
-										'minAvailability'	=> 'integer',
-										'limit'				=> 'integer',
-										'offset'			=> 'integer'									
-									);		
+		$this->optionalParams = [	'orderStatus' 		=> 'enum.status',
+									'search' 			=> 'string',  
+									'productCode'		=> 'string-or-array',
+									'minTourStartTime'	=> 'ISO8601',
+									'maxTourStartTime'	=> 'ISO8601',	
+									'updatedSince'		=> 'ISO8601',	
+									'minDateCreated'	=> 'ISO8601',	
+									'maxDateCreated'	=> 'ISO8601',		
+									'limit'				=> 'integer',
+									'offset'			=> 'integer'				
+								];		
 
 		if (is_array($params)) {
 			$this->customBuildFromArray($params);
 		}	
 	}
 
-	public function __toString() {        
-        //Verify the params in the Object Prior to Returning
-        if ($this->verifyParams()) {
-            return json_encode($this);
-        } else {
-            return '';
-        }        
-    }
+	public function isValid() {
+		return $this->isValidRequest();
+	}
 
     // Builds the Resource from an Array Provided
     private function customBuildFromArray($params = array()) {

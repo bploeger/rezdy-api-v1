@@ -1,5 +1,7 @@
 <?php
-namespace Rezdy\Requests;
+namespace Rezdy\Requests\Objects;
+
+use Rezdy\Requests\BaseRequest;
 
 /**
  * Creates and verifies the BookingCreatedBy request
@@ -7,7 +9,7 @@ namespace Rezdy\Requests;
  * @package Requests
  * @author Brad Ploeger
  */
-class BookingCreatedBy extends BaseRequest {
+class CreatedBy extends BaseRequest {
 
 		public function __construct($params = '') {
 			

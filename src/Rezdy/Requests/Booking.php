@@ -1,13 +1,13 @@
 <?php
-namespace Rezdy\Requests;
-
+ namespace Rezdy\Requests;
+ 
 /**
  * Creates and verifies the BookingRequest resource
  *
  * @package Resources
  * @author Brad Ploeger
  */
-class BookingRequest extends BaseRequest {	
+class Booking extends BaseRequest implements RequestInterface {	
 
 	public function __construct($params = '') {
 		
@@ -22,40 +22,40 @@ class BookingRequest extends BaseRequest {
 								    "dateUpdated"		=> "date-time",
 								    "internalNotes"		=> "string",
 								    "orderNumber"		=> "string",
-    								"paymentOption"		=> "enum-online-payment-options",
+    								"paymentOption"		=> "enum.online-payment-options",
     								"resellerAlias"		=> "string",
 								    "resellerComments"	=> "string",
 								    "resellerId"		=> "integer",
 								    "resellerName"		=> "string",
 								    "resellerReference"	=> "string",
-								    "resellerSource"	=> "enum-source",
+								    "resellerSource"	=> "enum.source",
 								    "sendNotifications"	=> "boolean",
-								    "source"			=> "enum-source",
+								    "source"			=> "enum.source",
 								    "sourceChannel"		=> "string",
 								    "sourceReferrer"	=> "string",
-								    "status"			=> "enum-status",
+								    "status"			=> "enum.status",
 								    "supplierAlias"		=> "string",
 								    "supplierId"		=> "integer",
 								    "supplierName"		=> "string",
 								    "surcharge"			=> "numeric",
 								    "totalAmount"		=> "numeric",
-								    "totalCurrency"		=> "enum-currency-types",
+								    "totalCurrency"		=> "enum.currency-types",
 								    "totalDue"			=> "numeric",
 								    "totalPaid"			=> "numeric"
 								];	
 
 		// Sets the class mapping for single set items to the request 
-		$this->setClassMap = 	[ 	'Rezdy\Requests\BookingCreatedBy' 		=> 'createdBy', 
-									'Rezdy\Requests\BookingCreditCard'  	=> 'creditCard',
-									'Rezdy\Requests\BookingCustomer' 		=> 'customer',
-									'Rezdy\Requests\BookingResellerUser' 	=> 'resellerUser'
+		$this->setClassMap = 	[ 	'Rezdy\Requests\Objects\CreatedBy' 		=> 'createdBy', 
+									'Rezdy\Requests\Objects\CreditCard'  	=> 'creditCard',
+									'Rezdy\Requests\Customer' 				=> 'customer',
+									'Rezdy\Requests\Booking\ResellerUser' 	=> 'resellerUser'
 								]; 
 
 		//Sets the class mapping for multiple item sets to the request 				
-		$this->addClassMap  = 	[	'Rezdy\Requests\BookingField'			=> 'fields',
-									'Rezdy\Requests\BookingItem'			=> 'items',
-									'Rezdy\Requests\BookingPayment'			=> 'payments',
-									'Rezdy\Requests\BookingVoucher'			=> 'vouchers'
+		$this->addClassMap  = 	[	'Rezdy\Requests\Objects\Field'			=> 'fields',
+									'Rezdy\Requests\Booking\Item'			=> 'items',
+									'Rezdy\Requests\Booking\Payment'		=> 'payments',
+									'Rezdy\Requests\Booking\Voucher'		=> 'vouchers'
 								];	
 
 		if (is_array($params)) {
@@ -63,11 +63,20 @@ class BookingRequest extends BaseRequest {
 		}
 	}
 
+	public function isValid() {
+		return ( $this->isValidBooking() && $this->isValidRequest() );
+	}
+
 	/* Verifies the request has the minimum amount of information
 	*  to save a booking.  In Rezdy, a booking requires at a minimum,
 	*  a customer and at least one item.
 	*/
-	public function isValidBooking() {
-		return (isset($this->items) && isset($this->customer));		
+	private function isValidBooking() {
+		if ((isset($this->items) && isset($this->customer))) {
+			return true;
+		} else {
+			$this->setError('The booking request does not include the minimum information required to be processed by the API. A valid request must include a customer and at least one item.');
+			return false;
+		}		
 	}
 }

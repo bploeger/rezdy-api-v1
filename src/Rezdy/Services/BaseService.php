@@ -68,16 +68,12 @@ abstract class BaseService {
     }
 
     protected function sendRequestWithBody($method, $baseUrl, $body = null, $queryParams = array()) {
-        if ($body->isValidRequest()) {
-            $queryParams["apiKey"] = $this->apiKey;
-            $request = new Request($method, $baseUrl);            
-            return $this->client->send($request, [
-                'query' => $queryParams,
-                'json' => $body
-            ]);
-        } else {
-            return $body->getError();
-        }        
+        $queryParams["apiKey"] = $this->apiKey;
+        $request = new Request($method, $baseUrl);            
+        return $this->client->send($request, [
+            'query' => $queryParams,
+            'json' => $body
+        ]);          
     }
 
     /**
@@ -102,7 +98,7 @@ abstract class BaseService {
         return $rezdyException;
     }
 
-    public function returnExceptionAsErrors($request, $e) {        
+    protected function returnExceptionAsErrors($request, $e) {        
         // Convert the Exception to a Rezdy\Exceptions\RezdyException Class            
         $rezdyException = $this->convertException($e);
         

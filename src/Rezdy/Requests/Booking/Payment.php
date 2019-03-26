@@ -1,5 +1,7 @@
 <?php
-namespace Rezdy\Requests;
+namespace Rezdy\Requests\Booking;
+
+use Rezdy\Requests\BaseRequest;
 
 /**
  * Creates and verifies the BookingPayment request
@@ -7,7 +9,7 @@ namespace Rezdy\Requests;
  * @package Requests
  * @author Brad Ploeger
  */
-class BookingPayment extends BaseRequest {
+class Payment extends BaseRequest {
 
 		public function __construct($params = '') {
 			
@@ -16,7 +18,7 @@ class BookingPayment extends BaseRequest {
             								"currency"		=> "string",
             								"date"			=> "date-time",
             								"label"			=> "string",
-            								"recipient"		=> "enum-payment-recipient",
+            								"recipient"		=> "enum.payment-recipient",
            									"type"			=> "string"			
 									];
 

@@ -1,5 +1,7 @@
 <?php
-namespace Rezdy\Requests;
+namespace Rezdy\Requests\Booking;
+
+use Rezdy\Requests\BaseRequest;
 
 /**
  * Creates and verifies the BookingItemExtraImage request
@@ -7,7 +9,7 @@ namespace Rezdy\Requests;
  * @package Requests
  * @author Brad Ploeger
  */
-class BookingItemExtraImage extends BaseRequest {
+class ItemExtraImage extends BaseRequest {
 
 		public function __construct($params = '') {			
 			//Set the optional properties of the object and the required type
@@ -17,6 +19,7 @@ class BookingItemExtraImage extends BaseRequest {
                         				"mediumSizeUrl"	=> "string",
                         				"thumbnailUrl"	=> "string"
 									];
+			
 			if (is_array($params)) {
 				$this->buildFromArray($params);
 			}	

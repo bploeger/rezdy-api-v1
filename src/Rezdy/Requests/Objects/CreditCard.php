@@ -1,13 +1,13 @@
 <?php
-namespace Rezdy\Requests;
+namespace Rezdy\Requests\Objects;
 
 /**
- * Creates and verifies the BookingCreditCard request
+ * Creates and verifies the CreditCard request
  *
  * @package Requests
  * @author Brad Ploeger
  */
-class BookingCreditCard extends BaseRequest {
+class CreditCard extends BaseRequest {
 
 		public function __construct($params = '') {
 			
@@ -16,7 +16,7 @@ class BookingCreditCard extends BaseRequest {
         									"cardNumber"			=> "string",
         									"cardSecurityNumber"	=> "string",
         									"cardToken"				=> "string",
-        									"cardType"				=> "enum-credit-card-type",
+        									"cardType"				=> "enum.credit-card-type",
         									"expiryMonth"			=> "string",
        										"expiryYear"			=> "string"						
 									];
