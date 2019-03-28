@@ -39,11 +39,17 @@ class Config {
                             'extra_create'              => 'extra',
                             'extra_get'                 => 'extra/',
                             'extra_update'              => 'extra/',
+                            'extra_delete'              => 'extra/',
+                            'extra_search'              => 'extra',
+                            'manifest_check_in_session' => 'manifest/checkinSession',
+                            'manifest_check_in_status'  => 'manifest/checkinSession',
+                            'manifest_remove_check_in'  => 'manifest/checkinSession',
+                            'manifest_check_in_item'    => 'manifest/checkinOrderSession',
                         ],
         /**
-         * Setting the version fo the application used in Rest Calls when setting the version header
+         * Setting the version of the application used in REST Calls when setting the version header
          */
-        'settings' =>   [   'version' => '1.x.x'
+        'settings' =>   [   'version' => '0.1.0',
                         ],       
     ];
 

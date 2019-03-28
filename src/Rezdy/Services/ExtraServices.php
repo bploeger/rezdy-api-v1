@@ -14,7 +14,7 @@ use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Psr7;
 
 /**
- * Performs all actions pertaining to booking Rezdy API Customer Service Calls
+ * Performs all actions pertaining to booking Rezdy API Extra Service Calls
  *
  * @package Services
  * @author Brad Ploeger
@@ -24,7 +24,7 @@ class ExtraServices extends BaseService {
 	public function create(Extra $extra) {
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.extra_create');
             
-        // Verify the customer request has the minimum information required prior to submission.
+        // Verify the extra request has the minimum information required prior to submission.
         if ( !$extra->isValid() ) return $extra;
 
         // try to Send the request
@@ -71,20 +71,8 @@ class ExtraServices extends BaseService {
         return new ResponseStandard($response->getBody(), 'extra');
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    public function delete($customerID) {        
-        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.customer_delete') . $customerID;
+    public function delete($extraID) {        
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.extra_delete') . $extraID;
         
         $request = new EmptyRequest;
    
@@ -95,22 +83,23 @@ class ExtraServices extends BaseService {
         }    
         
         // Handle the Response
-        return new ResponseNoData('The customer was successfully deleted');
+        return new ResponseNoData('The extra was successfully deleted');
     }
 
-    public function search(SearchRequest $search) {
-        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.customer_search');
+    public function search(string $searchString = '') {        
         
-        // Verify the booking request has the minimum information required prior to submission.
-        if ( !$search->isValid() ) return $search;
-
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.extra_search');
+        
+        // Build the Search String Array
+        $search['searchString'] = $searchString;
+             
         try {
-            $response = parent::sendRequestWithOutBody('GET', $baseUrl, $search->toArray());
-        } catch (TransferException $e) {            
-            return $this->returnExceptionAsErrors($search, $e);      
+            $response = parent::sendRequestWithoutBody('GET', $baseUrl, $search);
+        } catch (TransferException $e) {
+            return $this->returnExceptionAsErrors($session, $e);                
         }    
         
         // Handle the Response
-        return new ResponseList($response->getBody(), 'customers');
+        return new ResponseList($response->getBody(), 'extras');
     }
 }

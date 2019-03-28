@@ -17,6 +17,8 @@ use Rezdy\Services\CategoryServices;
 use Rezdy\Services\CompanyServices;
 use Rezdy\Services\CustomerServices;
 use Rezdy\Services\ExtraServices;
+use Rezdy\Services\ManifestServices;
+use Rezdy\Services\PickupListServices;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -25,7 +27,7 @@ use GuzzleHttp\ClientInterface;
  * Exposes all implemented Rezdy API functionality
  *
  * @package Rezdy
- * @version 1.0.0
+ * @version 0.1.0
  * @author Brad Ploeger
  */
 class RezdyAPI
@@ -124,5 +126,7 @@ class RezdyAPI
         $this->companies = new CompanyServices($apiKey, $client);     
         $this->customers = new CustomerServices($apiKey, $client);   
         $this->extra = new ExtraServices($apiKey, $client);   
+        $this->manifest = new ManifestServices($apiKey, $client);   
+        $this->pickupList = new PickupListServices($apiKey, $client);   
     }
 }

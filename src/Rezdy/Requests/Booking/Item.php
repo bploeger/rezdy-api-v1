@@ -30,11 +30,11 @@ class Item extends BaseRequest {
 									];
 
 			// Sets the class mapping for single set items to the request 
-			$this->setClassMap =	[ 	'Rezdy\Requests\Booking\ItemPickupLocation'	=> 'pickupLocation'
+			$this->setClassMap =	[ 	'Rezdy\Requests\Objects\PickupLocation'		=> 'pickupLocation'
 									]; 
 
 			//Sets the class mapping for multiple item sets to the request 				
-			$this->addClassMap  =	[	'Rezdy\Requests\Booking\ItemExtra'			=> 'extras',
+			$this->addClassMap  =	[	'Rezdy\Requests\Booking\Extra'				=> 'extras',
 										'Rezdy\Requests\Booking\ItemQuantity'		=> 'quantities'
 									];	
 

@@ -1,5 +1,5 @@
 <?php
-namespace Rezdy\Requests\Booking;
+namespace Rezdy\Requests\Objects;
 
 use Rezdy\Requests\BaseRequest;
 

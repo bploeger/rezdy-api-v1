@@ -1,15 +1,15 @@
 <?php
-namespace Rezdy\Requests\Booking;
+namespace Rezdy\Requests\Objects;
 
 use Rezdy\Requests\BaseRequest;
 
 /**
- * Creates and verifies the BookingItemPickupLocation request
+ * Creates and verifies the PickupLocation request
  *
  * @package Requests
  * @author Brad Ploeger
  */
-class ItemPickupLocation extends BaseRequest {
+class PickupLocation extends BaseRequest {
 
 		public function __construct($params = '') {
 			

@@ -20,8 +20,10 @@ abstract class BaseRequest {
     protected $addClassMap = [];
 
     protected $enumFields = [ 
-                            'credit-card-type'    =>    [   'VISA', 'MASTERCARD', 'AMEX', 'DINERS','DISCOVER', 'JCB'                                
-                                                        ],
+                            'booking-mode'          =>  [   'NO_DATE','DATE_ENQUIRY','INVENTORY'                                              ],
+                            
+                            'credit-card-type'      =>  [   'VISA', 'MASTERCARD', 'AMEX', 'DINERS','DISCOVER', 'JCB'                          ],
+
                             'currency-types'        =>  [   'AED','ANG','ARS','AUD','AWG','AZN','BGN','BHD','BOB','BRL','BYR','CAD','CHF','CLP',
                                                             'CNY','COP','CZK','DKK','EGP','EUR','FJD','GBP','GEL','HKD','HRK','HUF','IDR','ILS',
                                                             'INR','ISK','JOD','JPY','KES','KRW','KWD','KZT','LTL','LVL','MAD','MKD','MUR','MXN',
@@ -34,34 +36,35 @@ abstract class BaseRequest {
                                                             'LSL','MOP','MGF','MGA','MWK','MVR','MTL','MRO','MDL','MNT','MZM','MMK','NAD','NPR',
                                                             'NIO','KPW','PKR','PAB','RWF','STD','SCR','SLL','SKK','SIT','SOS','LKR','SHP','SDD',
                                                             'SZL','TJS','TZS','TTD','TND','TMM','UGX','UZS','VND','YUM','ZMK','ZWD','AFN','MZN',
-                                                            'UYI','ZMW','GHC','GGP','IMP','JEP','TRL','TVD'
-                                                        ],
-                            'extra-price-type'      =>  [   'ANY','FIXED','QUANTITY'
-                                                        ],   
-                            'field-type'            =>  [   'String','List','Boolean','Phone','Date'
-                                                        ],
-                            'gender'                =>  [   'MALE','FEMALE'
-                                                        ],
-                            'online-payment-options'=>  [   'CREDITCARD','PAYPAL','BANKTRANSFER','CASH','INVOICE','EXTERNAL','ALIPAY'
-                                                        ], 
-                            'price-group-type'      =>  [   'EACH','TOTAL'
-                                                        ],
-                            'source'                =>  [   'ONLINE','INTERNAL','PARTNERS','COMMUNITY','MARKETPLACE','MARKETPLACE_PREF_RATE', 
-                                                            'API' 
-                                                        ],
-                            'status'                =>  [   'PROCESSING','NEW','ON_HOLD','PENDING_SUPPLIER','PENDING_CUSTOMER','CONFIRMED', 
-                                                            'CANCELLED','ABANDONED_CART' 
-                                                        ],       
-                            'title'                 =>  [   'MR','MS','MRS','MISS'
-                                                        ],     
-                            'voucher-status'        =>  [   'ISSUED','REDEEMED','PARTIALLY_REDEEMED','EXPIRED'
-                                                        ],  
-                            'voucher-value-type'    =>  [   'VALUE_LIMITPRODUCT','VALUE','VALUE_LIMITCATALOG','PERCENT_LIMITPRODUCT','PERCENT',
-                                                            'PERCENT_LIMITCATALOG','PRODUCT'
-                                                        ],  
-                        ];
+                                                            'UYI','ZMW','GHC','GGP','IMP','JEP','TRL','TVD'                                   ],
 
-    public $error = [];
+                            'extra-price-type'      =>  [   'ANY','FIXED','QUANTITY'                                                          ],
+
+                            'field-type'            =>  [   'String','List','Boolean','Phone','Date'                                          ],
+
+                            'gender'                =>  [   'MALE','FEMALE'                                                                   ],
+
+                            'online-payment-options'=>  [   'CREDITCARD','PAYPAL','BANKTRANSFER','CASH','INVOICE','EXTERNAL','ALIPAY'         ],
+
+                            'price-group-type'      =>  [   'EACH','TOTAL'                                                                    ],
+
+                            'product-type'          =>  [   'ACTIVITY','DAYTOUR','MULTIDAYTOUR','ENQUIRY','PRIVATE_TOUR','TICKET','RENTAL',
+                                                            'CHARTER','EVENT','PASS','HOPONHOPOFF','GIFT_CARD','TRANSFER','LESSON',
+                                                            'MERCHANDISE','CUSTOM'                                                            ],
+
+                            'source'                =>  [   'ONLINE','INTERNAL','PARTNERS','COMMUNITY','MARKETPLACE','MARKETPLACE_PREF_RATE', 
+                                                            'API'                                                                             ],
+
+                            'status'                =>  [   'PROCESSING','NEW','ON_HOLD','PENDING_SUPPLIER','PENDING_CUSTOMER','CONFIRMED', 
+                                                            'CANCELLED','ABANDONED_CART'                                                      ], 
+
+                            'title'                 =>  [   'MR','MS','MRS','MISS'                                                            ], 
+
+                            'voucher-status'        =>  [   'ISSUED','REDEEMED','PARTIALLY_REDEEMED','EXPIRED'                                ], 
+
+                            'voucher-value-type'    =>  [   'VALUE_LIMITPRODUCT','VALUE','VALUE_LIMITCATALOG','PERCENT_LIMITPRODUCT','PERCENT',
+                                                            'PERCENT_LIMITCATALOG','PRODUCT'                                                  ],  
+                        ];
 
     // Sets parameter values
     public function set($data, $key = null) {
@@ -87,6 +90,10 @@ abstract class BaseRequest {
         return json_encode($this);
     }
 
+    public function __toString() {        
+        return json_encode($this);          
+    }
+
     public function toArray() {      
         // Recast the Object as an array
         $rawArray = (array) $this;
@@ -110,7 +117,11 @@ abstract class BaseRequest {
     }
 
     public function viewErrors() {
-        return $this->error;
+        if(is_set($this->error)) {
+            return json_encode($this->error);
+        } else {
+            return '';
+        }
     }
 
     // Attached an item in the Request based on the class of item passed to the function
@@ -210,15 +221,40 @@ abstract class BaseRequest {
     }
 
     protected function checkType($param, $type) {
-        
+
+        $explode = explode('|', $type);
+
         // Parse the type required
         switch ($type) {
+                
                 // Verify the data is a string
                 case 'string':
                     if(!is_string($this->$param)) { 
-                        $this->error[] = $param . ' IS NOT A STRING';
+                        $this->setError($param . ' IS NOT A STRING');
                     }
-                    break;  
+                    if (isset($explode[1])) {
+                        $range = explode('-', $explode[1]);
+                        
+                        if (strlen ($this->$param) < $range[0] || strlen ($this->$param) > $range[1]) {
+                            $this->setError($param . ' must contain between ' . $range[0] . ' and ' . $range[1] . 'characters');
+                        }                       
+                    }
+                    break; 
+
+                // Verify the data is a string and between 100 and 15,000 characters
+                case 'string|100-15000':
+
+                    if(!is_string($this->$param)) { 
+                        $this->setError($param . ' IS NOT A STRING');
+                    
+                    } elseif (strlen ($this->$param) < 100) {
+                        $this->setError($param . ' IS NOT LONG ENOUGH');
+                    
+                    } elseif (strlen ($this->$param) > 15000) {
+                        $this->setError($param . ' IS TOO LONG');
+
+                    }
+                    break; 
 
                 // Verify the data is a string
                 case 'string-or-array':
@@ -228,12 +264,12 @@ abstract class BaseRequest {
                         // Is an ARRAY, verify the array contents
                         foreach ($this->$param as $item) {
                             if(!is_string($item)) {
-                                $this->error[] = $param . ' IS NOT AN ARRAY OF STRINGS';
+                                $this->setError($param . ' IS NOT AN ARRAY OF STRINGS');
                             }
                         }
                     } else {
                         // DOES NOT PASS
-                        $this->error[] = $param . ' IS NOT A STRING OR ARRAY';
+                        $this->setError($param . ' IS NOT A STRING OR ARRAY');
                     }
                     break;  
 
@@ -247,46 +283,53 @@ abstract class BaseRequest {
                             $this->$param = $newParam;                        
                         } else {
                            // It Cannot be Fixed
-                           $this->error[] = $param . ' IS NOT AN INTEGER'; 
+                           $this->setError($param . ' IS NOT AN INTEGER'); 
                        }                        
                     }
                     break;  
 
                 // Verify the data is boolean
-                case 'boolean':
+                case 'boolean':                
+
                     if(!is_bool($this->$param)) { 
                         
                         // Try to fix the issue
-                        if (strtoupper($this->$param) == 'FALSE' || $this->$param = 0) {
+                        if (strtoupper($this->$param) === 'TRUE' || $this->$param === 1) {
                             // Handles common errors that recasting would not handle properly
-                            $newParam = false;
+                            $this->$param = true;
                         } else {
-                            // Try to recast the value
-                            $newParam = (bool) $this->param; 
-                        }
+                            // recast the value
+                            $this->$param = false; 
+                        } 
 
-                        if (is_bool($newParam)) {
-                            //Fix the Value
-                            $this->param = $newParam;  
+                        // Verify the Fix Worked
+                        if(!is_bool($this->$param)) {
+                            $this->setError($param . ' IS NOT AN BOOLEAN');
+                        } 
+                    }
+
+                    // Cast Correction to string
+                    if (is_bool($this->$param)) {
+                        if ($this->$param) {
+                            $this->$param = 'true';
                         } else {
-                            // It Cannot be Fixed
-                           $this->error[] = $param . ' IS NOT AN BOOLEAN';
-                       }                       
-                        
-                    }                    
+                            $this->param = 'false';
+                        }
+                    } 
+
                     break;  
 
                 // Verify the data is numeric
                 case 'numeric':
                     if(!is_numeric($this->$param)) {                                    
                         //Try and fix the issue
-                        $newParam = (float) $this->param;
+                        $newParam = (float) $this->$param;
 
                         // Check the fix
                         if (is_numeric($newParam)) {
                             $this->$param = $newParam;
                         } else {
-                            $this->error[] = $param . ' IS NOT NUMERIC';
+                            $this->setError($param . ' IS NOT NUMERIC');
                         }
                     }
                     break;  
@@ -311,13 +354,13 @@ abstract class BaseRequest {
                                 //Fix it
                                 $this->$param = $newParam;                                
                             } else {
-                                $this->error = $param . ' IS NOT IN THE PROPER ISO8601 FORMAT';
+                                $this->setError($param . ' IS NOT IN THE PROPER ISO8601 FORMAT');
                             }                          
                         }
 
                     } else {
                         // the string was able to be parsed and is invalid
-                        $this->error[] = $param . ' COULD NOT BE PARSED';
+                        $this->setError($param . ' COULD NOT BE PARSED');
                     }
 
                     break;  
@@ -325,7 +368,7 @@ abstract class BaseRequest {
                 case 'date-time':
                     // Verify it is a String First
                     if(!is_string($this->$param)) { 
-                        $this->error[] = $param . ' IS NOT A STRING';
+                        $this->setError($param . ' IS NOT A STRING');
                     }
                     // Parse it with Carbon
                     $dateTime = Carbon::parse($this->$param);
@@ -341,22 +384,22 @@ abstract class BaseRequest {
                                 $this->$param = $newParam;
                             } else {
                                 // the the value is invalis
-                                $this->error[] = $param . ' IS NOT IN THE PROPER DATE-TIME FORMAT';                             
+                                $this->setError($param . ' IS NOT IN THE PROPER DATE-TIME FORMAT');                             
                             }
                         }
                     } else {
                         // The string was able to be parsed and is invalid
-                        $this->error[] = $param . ' COULD NOT BE PARSED';
+                        $this->setError($param . ' COULD NOT BE PARSED');
                     }
                     break;
 
                 case 'priceOptionArray':
                     if(!is_array($this->$param)) { 
-                        $this->error[] = $param . ' IS NOT AN PRICE OPTION ARRAY';
+                        $this->setError($param . ' IS NOT AN PRICE OPTION ARRAY');
                     }
                     foreach ($this->$param as $obj) {
                         if (get_class($obj) !== 'Rezdy\Requests\Availability\PriceOption') {
-                            $this->error[] = $param . ' IS NOT A PRICE OPTION CLASS';
+                            $this->setError($param . ' IS NOT A PRICE OPTION CLASS');
                         }
                     }
                     break;   
@@ -370,12 +413,12 @@ abstract class BaseRequest {
                         // Load the Acceptable Values
                         $acceptable_field_types = $this->enumFields[$lookup[1]];
                         if (!in_array($this->$param, $acceptable_field_types)) {
-                            $this->error[] = $this->$param . ' is not acceptable value for ' . $param;
+                            $this->setError($this->$param . ' is not acceptable value for ' . $param);
                         }
 
                     } else {
                         // The value type is not on our list
-                        $this->error[] = $type . ' is not a valid datatype';
+                        $this->setError($type . ' is not a valid datatype');
                     } 
                     break;
             }
@@ -386,11 +429,7 @@ abstract class BaseRequest {
         $this->verifyParams();
 
         // Check for Errors        
-        return (count($this->error) == 0);        
-    }
-
-    protected function getError() {
-        return json_encode($this->error);
+        return (!isset($this->error));        
     }
 
     protected function setError($error) {
@@ -400,9 +439,5 @@ abstract class BaseRequest {
             }
         } 
         $this->error[] = $error;
-    }   
-
-    public function __toString() {  
-        return json_encode($this);          
-    }
+    }       
 }

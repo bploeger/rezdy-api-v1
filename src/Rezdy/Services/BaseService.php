@@ -49,17 +49,11 @@ abstract class BaseService {
         return $this->client;
     }
 
-    protected function sendRequestWithoutBody($method, $baseUrl, $queryParams = array()) {        
-        $queryParams[]["apiKey"] = $this->apiKey;   
+    protected function sendRequestWithoutBody($method, $baseUrl, array $queryParams = array()) {        
+        $queryParams["apiKey"] = $this->apiKey;  
 
-        //Build the query string 
-        $query = '';
-        foreach ($queryParams as $index => $param) {
-            foreach ($param as $key => $value) {
-                $query .= $key . "=" . $value . '&';
-            }            
-        }
-        $query = trim($query, '&');
+        // Parse the Array of Query Parameters to create the Query String
+        $query = $this->buildQueryString($queryParams);
               
         $request = new Request($method, $baseUrl);
         return $this->client->send($request, [
@@ -106,5 +100,22 @@ abstract class BaseService {
         $request->appendTransferErrors($rezdyException);
         
         return $request;
+    }
+
+    private function buildQueryString(array $queryParams) {
+        
+        // Initialize the query string 
+        $query = '';        
+
+        foreach ($queryParams as $index => $param) {
+            if (is_array($param)) {
+                foreach ($param as $key => $value) {
+                    $query .= $key . "=" . $value . '&';
+                }    
+            } else {
+                 $query .= $index . "=" . $param . '&';
+            }                    
+        }
+        return trim($query, '&');
     }
 }
