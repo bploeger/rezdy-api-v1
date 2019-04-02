@@ -3,7 +3,6 @@ namespace Rezdy\Services;
 
 use Rezdy\Util\Config;
 
-use Rezdy\Requests\EmptyRequest;
 use Rezdy\Requests\ProductRate;
 
 use Rezdy\Responses\ResponseStandard;
@@ -14,77 +13,101 @@ use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Psr7;
 
 /**
- * Performs all actions pertaining to booking Rezdy API Rate Service Calls
+ * Performs all actions pertaining to Rezdy API Rate Service Calls
  *
  * @package Services
  * @author Brad Ploeger
- */
+ */  
 class RateServices extends BaseService {
-
-    public function search(array ...$searchParams) {        
+    /**
+     * Searches rates based on rate name and product code.
+     *
+     * NOTE: If rateName and productCode are not specified, then it will return all rates belonging to the supplier
+     *    
+     * @param array|optional $queryParams  
+     * @return ResponseList object
+     * @throws EmptyRequest request object with errors     
+     */
+    public function search(array ...$queryParams) {        
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.rate_search');
-
-        $request = $this->parseOptionalArray($searchParams, []);
-
-        // try to Send the request
+        // Pluck the queryParams array if passed
+        $query = $this->parseOptionalArray($searchParams, []);
         try {                   
-            $response = parent::sendRequestWithoutBody('GET', $baseUrl, $request);
+            // Try to send the request
+            $response = parent::sendRequestWithoutBody('GET', $baseUrl, $query);
         } catch (TransferException $e) {            
-            return $this->returnExceptionAsErrors($e, $request);         
+            // Handle a TransferException
+            return $this->returnExceptionAsErrors($e);         
         }    
-
-        // Handle the Response
+        // Return a ResponseList object
         return new ResponseList($response->getBody(), 'rates');
     }
-
-    public function find(int $rateId) {
+    /**
+     * Retrieves a rate based on its ID
+     *
+     * @param int $rateId  
+     * @return ResponseStandard object
+     * @throws EmptyRequest request object with errors     
+     */
+    public function get(int $rateId) {
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.rate_get') . $rateId;
-
-        // Try to Send the request
         try {                   
+            // Try to send the request
             $response = parent::sendRequestWithoutBody('GET', $baseUrl);
         } catch (TransferException $e) {            
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e);         
         }    
-
-        // Handle the Response
+        // Return a ResponseList object
         return new ResponseStandard($response->getBody(), 'rate');
-
     }
-
+    /**
+     * Adds a product to the specfied rate
+     *
+     * @param int $rateId  
+     * @param string $productCode
+     * @param ProductRate $request object  
+     * @return ResponseStandard object
+     * @throws ProductRate request object with errors     
+     */
     public function addProduct(int $rateId, string $productCode, ProductRate $request) {
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . sprintf(Config::get('endpoints.rate_product'), $rateId, $productCode);
-
         //Set the Product Code Automatically
         $request->set('productCode', $productCode);
-
-        // Verify the rate request has the minimum information required prior to submission.
+        // Verify ProductRate request object.
         if ( !$request->isValid() ) return $request;        
-
-        // try to Send the request
         try {                   
+            // Try to send the request
             $response = parent::sendRequestWithBody('PUT', $baseUrl, $request);
         } catch (TransferException $e) {            
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e, $request);         
         }    
-
-        // Handle the Response
+        // Return a ResponseStandard object
         return new ResponseStandard($response->getBody(), 'rate');
     }
-
+    /**
+     * Removes a product from the specified rate
+     *
+     * @param int $rateId  
+     * @param string $productCode
+     * @return ResponseNoData object
+     * @throws EmptyRequest request object with errors     
+     */
     public function removeProduct(int $rateId, string $productCode) {
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . sprintf(Config::get('endpoints.rate_product'), $rateId, $productCode);
-
-        // try to Send the request
         try {                   
+            // Try to send the request
             $response = parent::sendRequestWithoutBody('DELETE', $baseUrl);
         } catch (TransferException $e) {            
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e);         
         }    
-
+        // Return a ResponseNoData object
         return new ResponseNoData('The Rate has been removed from the product');
-
-    }
-
-    
+    }    
 }

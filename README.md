@@ -1,4 +1,7 @@
 # Rezdy API PHP SDK
+[![Latest Stable Version](https://poser.pugx.org/bploeger/rezdy-api-v1/v/stable)](https://packagist.org/packages/bploeger/rezdy-api-v1)
+[![Latest Unstable Version](https://poser.pugx.org/bploeger/rezdy-api-v1/v/unstable)](https://packagist.org/packages/bploeger/rezdy-api-v1)
+[![License](https://poser.pugx.org/bploeger/rezdy-api-v1/license)](https://packagist.org/packages/bploeger/rezdy-api-v1)
 
 ### This library utilizes [GuzzlePHP](http://guzzle.readthedocs.org/)
 ### This library utilizes [Carbon](https://carbon.nesbot.com/)
@@ -32,9 +35,11 @@ use Rezdy\Requests\SimpleSearch;
 $rezdyAPI = new RezdyAPI('your api key');
 
 // Set the search parameters
-$searchParams =	['search' => 'Smith',
-				 'limit'  => 50,
-				 'offset' => 0        ];
+$searchParams =	[
+	'search' => 'Smith',
+	'limit'  => 50,
+	'offset' => 0 
+];
 
 // Create the Simple Search Request
 $search = new SimpleSearch($searchParams);
@@ -42,7 +47,7 @@ $search = new SimpleSearch($searchParams);
 // Send the request to the API
 $response = $this->rezdyAPI->customers->search($search);
 
-// Print the Response
+// View the Response
 echo $response;
 
 ```

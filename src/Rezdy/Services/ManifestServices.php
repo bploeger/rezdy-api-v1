@@ -3,7 +3,6 @@ namespace Rezdy\Services;
 
 use Rezdy\Util\Config;
 
-use Rezdy\Requests\EmptyRequest;
 use Rezdy\Requests\Manifest;
 
 use Rezdy\Responses\ResponseStandard;
@@ -13,112 +12,146 @@ use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Psr7;
 
 /**
- * Performs all actions pertaining to booking Rezdy API Manifest Service Calls
+ * Performs all actions pertaining to Rezdy API Manifest Service Calls
  *
  * @package Services
  * @author Brad Ploeger
  */
 class ManifestServices extends BaseService {
-
+    /**
+     * Store Check-in / No show flag for everyone in a specified session. 
+     * NOTE: The session is identified by product code and start time (or start time local).  Only 
+     * available for the supplier API.
+     * @param Manifest $request object 
+     * @return ResponseNoData object
+     * @throws Manifest request object with errors     
+     */
 	public function checkInSession(Manifest $request) {
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.manifest_check_in_session');
-            
-        // Verify the extra request has the minimum information required prior to submission.
+        // Verify the Manifest request object.
         if ( !$request->isValid() ) return $request;     
-
-        // try to Send the request
         try {  
+            // Try to send the request
             $response = parent::sendRequestWithoutBody('PUT', $baseUrl, $request->toArray());              
         } catch (TransferException $e) { 
+            // Handle a TransferException  
             return $this->returnExceptionAsErrors($e, $request);         
         }    
-        
-        // Handle the Response
+        // Return a ResponseNoData object
         return new ResponseNoData('Everyone in the Session has had their Check-in status updated');
     }
-
-    public function findSessionCheckIn(Manifest $request) {
+    /**
+     * Retrieves the Check-in status. Checks if everyone in the whole session was checked in. 
+     * NOTE: The session is identified by product code and start time (or start time local).  Only 
+     * available for the supplier API.
+     * @param Manifest $request object 
+     * @return ResponseStandard object
+     * @throws Manifest request object with errors     
+     */
+    public function getSessionCheckIn(Manifest $request) {
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.manifest_check_in_status');
-            
-        // Verify the extra request has the minimum information required prior to submission.
+        // Verify the Manifest request object.
         if ( !$request->isValid() ) return $request;     
-
-        // try to Send the request
-        try {  
+        try { 
+            // Try to send the request 
             $response = parent::sendRequestWithoutBody('GET', $baseUrl, $request->toArray());              
         } catch (TransferException $e) { 
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e, $request);         
         }    
-        
-        // Handle the Response
+        // Return a ResponseStandard object
         return new ResponseStandard($response->getBody(), 'checkin');
     }
-
+    /**
+     * Remove Check-in / No show flag from everyone in the whole session.
+     * NOTE: The session is identified by product code and start time (or start time local).  Only 
+     * available for the supplier API.
+     * @param Manifest $request object 
+     * @return ResponseNoData object
+     * @throws Manifest request object with errors     
+     */
     public function removeSessionCheckIn(Manifest $request) {
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.manifest_remove_check_in');
-            
-        // Verify the extra request has the minimum information required prior to submission.
+        // Verify the Manifest request object.
         if ( !$request->isValid() ) return $request;     
-
-        // try to Send the request
         try {  
+            // Try to send the request 
             $response = parent::sendRequestWithoutBody('DELETE', $baseUrl, $request->toArray());              
         } catch (TransferException $e) { 
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e, $request);         
         }    
-        
-        // Handle the Response
+        // Return a ResponseNoData object
         return new ResponseNoData('Everyone in the Session has had their Check-in status updated');
     }
-
+    /**
+     * Place Check-in a / No show flag for the specified order item.
+     * NOTE: The order item is identified by order number, product code and start time (or start time local).
+     * Only available for the supplier API.
+     * @param Manifest $request object 
+     * @return ResponseNoData object
+     * @throws Manifest request object with errors     
+     */
     public function checkInOrderItem(Manifest $request) {
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.manifest_check_in_item');
-
-        // Verify the extra request has the minimum information required prior to submission.
-        if ( !$request->isValid() ) return $request;     
-
-        // try to Send the request
-        try {  
+        // Verify the Manifest request object.
+        if ( !$request->isValid() ) return $request;    
+        try { 
+            // Try to send the request  
             $response = parent::sendRequestWithoutBody('PUT', $baseUrl, $request->toArray());              
         } catch (TransferException $e) { 
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($manifest, $e);         
         }  
-
-        // Handle the Response
+        // Return a ResponseNoData object
         return new ResponseNoData('The Item has been checked');  
     }
-
+    /**
+     * Retrieves the Check-in status. Checks if everyone in the whole session was checked in.
+     * NOTE: Retrieves the Check-in status. Checks if everyone in the whole session was checked in.  Only 
+     * available for the supplier API.
+     * @param Manifest $request object 
+     * @return ResponseStandard object
+     * @throws Manifest request object with errors     
+     */
     public function getOrderItemCheckIn(Manifest $manifest) {
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.manifest_check_in_item');
-
-        // Verify the extra request has the minimum information required prior to submission.
+        // Verify the Manifest request object.
         if ( !$request->isValid() ) return $request;     
-
-        // try to Send the request
         try {  
+            // Try to send the request  
             $response = parent::sendRequestWithoutBody('GET', $baseUrl, $request->toArray());              
         } catch (TransferException $e) { 
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e, $request);         
         }
-
-        // Handle the Response
+        // Return a ResponseStandard object
         return new ResponseStandard($response->getBody(), 'checkin');    
     }
-
+    /**
+     * Remove order item check-in. 
+     * @param Manifest $request object 
+     * @return ResponseNoData object
+     * @throws Manifest request object with errors     
+     */
     public function removeOrderItemCheckIn(Manifest $request) {
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.manifest_check_in_item');
-
-        // Verify the extra request has the minimum information required prior to submission.
+        // Verify the Manifest request object.
         if ( !$request->isValid() ) return $request;     
-
-        // try to Send the request
-        try {  
+        try { 
+            // Try to send the request   
             $response = parent::sendRequestWithoutBody('DELETE', $baseUrl, $request->toArray());              
         } catch (TransferException $e) { 
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e, $request);         
         }
-
-        // Handle the Response
+        // Return a ResponseNoData object
         return new ResponseNoData('The items check-in status has been cleared');  
     }
 }
