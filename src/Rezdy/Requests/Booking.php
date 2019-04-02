@@ -45,18 +45,18 @@ class Booking extends BaseRequest implements RequestInterface {
 								];	
 
 		// Sets the class mapping for single set items to the request 
-		$this->setClassMap = 	[ 	'Rezdy\Requests\Objects\CreatedBy' 		=> 'createdBy', 
-									'Rezdy\Requests\Objects\CreditCard'  	=> 'creditCard',
-									'Rezdy\Requests\Customer' 				=> 'customer',
-									'Rezdy\Requests\Booking\ResellerUser' 	=> 'resellerUser'
-								]; 
+		$this->setClassMap = [ 	'Rezdy\Requests\Objects\CreatedBy' 				=> 'createdBy', 
+								'Rezdy\Requests\Objects\CreditCard'  			=> 'creditCard',
+								'Rezdy\Requests\Customer' 						=> 'customer',
+								'Rezdy\Requests\Objects\BookingResellerUser'	=> 'resellerUser'
+							 ]; 
 
 		//Sets the class mapping for multiple item sets to the request 				
-		$this->addClassMap  = 	[	'Rezdy\Requests\Objects\Field'			=> 'fields',
-									'Rezdy\Requests\Booking\Item'			=> 'items',
-									'Rezdy\Requests\Booking\Payment'		=> 'payments',
-									'Rezdy\Requests\Booking\Voucher'		=> 'vouchers'
-								];	
+		$this->addClassMap  = [	'Rezdy\Requests\Objects\Field'			=> 'fields',
+								'Rezdy\Requests\Objects\BookingItem'	=> 'items',
+								'Rezdy\Requests\Objects\BookingPayment'	=> 'payments',
+								'Rezdy\Requests\Objects\BookingVoucher'	=> 'vouchers'
+							  ];	
 
 		if (is_array($params)) {
 			$this->buildFromArray($params);

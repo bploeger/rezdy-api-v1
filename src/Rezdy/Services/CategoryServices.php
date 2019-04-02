@@ -3,96 +3,131 @@ namespace Rezdy\Services;
 
 use Rezdy\Util\Config;
 
-use Rezdy\Requests\Category\SearchRequest;
-use Rezdy\Requests\EmptyRequest;
+use Rezdy\Requests\CategorySearch;
 
 use Rezdy\Responses\ResponseStandard;
 use Rezdy\Responses\ResponseList;
-use Rezdy\Responses\ResponseNoData;
 
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Psr7;
 
 /**
- * Performs all actions pertaining to booking Rezdy API Category Service Calls
+ * Performs all actions pertaining to Rezdy API Category Service Calls
  *
  * @package Services
  * @author Brad Ploeger
  */
 class CategoryServices extends BaseService {
-
-	public function search(SearchRequest $request) {
+    /**
+     * Load all categories matching a search request
+     *
+     * NOTE: If the search string is empty, all categories will be returned.  This will only 
+     * return categories belonging to the company doing the request.
+     *
+     * @param CategorySearch $request object 
+     * @return ResponseList object
+     * @throws CategorySearch request object with errors     
+     */
+	public function search(CategorySearch $request) {
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.category_search');
-        
-        // Verify the search request has the minimum information required prior to submission.
+        // Verify the CategorySearch object.
         if ( !$request->isValid() ) return $request;
-
         try {
+            // Try to send the request
             $response = parent::sendRequestWithOutBody('GET', $baseUrl, $request->toArray());
-        } catch (TransferException $e) {            
+        } catch (TransferException $e) { 
+            // Handle a TransferException             
             return $this->returnExceptionAsErrors($e, $request);      
         }    
-        
-        // Handle the Response
+        // Return a ResponseList object
         return new ResponseList($response->getBody(), 'categories');
     }
-
-    public function find($categoryID) {
+    /**
+     * Load an existing category by Id
+     *
+     * @param int $categoryId
+     * @return ResponseStandard object
+     * @throws EmptyRequest request object with errors     
+     */
+    public function get(int $categoryID) {
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.category_get') . $categoryID;
-       
-        // try to Send the request
-        try {                   
+        try {   
+            // Try to send the request                
             $response = parent::sendRequestWithOutBody('GET', $baseUrl);
         } catch (TransferException $e) {            
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e);         
         }    
-        
-        // Handle the Response
+        // Return a ResponseStandard object 
         return new ResponseStandard($response->getBody(), 'category');
     }
-
-    public function list($categoryID, array $optionalSettings = array()) {        
-        $baseUrl = Config::get('endpoints.base_url') . sprintf( Config::get('endpoints.category_list'), $categoryID );
-        
+    /**
+     * Load all products within a category. 
+     *
+     * @param int $categoryId
+     * @param array $optionalSettings an array of the query parameters 
+     * @return ResponseList object
+     * @throws EmptyRequest request object with errors    
+     */
+    public function list(int $categoryId, array $optionalSettings = array()) {        
+        // Build the request URL
+        $baseUrl = Config::get('endpoints.base_url') . sprintf( Config::get('endpoints.category_list'), $categoryId );
         foreach ($optionalSettings as $key => $value) {
+            // Parse the Optional Settings Array
             $options[][$key] = $value;
         } 
-
         try {
+            // Try to send the request
             $response = parent::sendRequestWithoutBody('GET', $baseUrl, $options);
         } catch (TransferException $e) {
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e);                
         }    
-        
-        // Handle the Response
+        // Return a ResponseList object 
         return new ResponseList($response->getBody(), 'products');
     }
-
-    public function addProduct($categoryID, $productCode) {
-        $baseUrl = Config::get('endpoints.base_url') . sprintf( Config::get('endpoints.category_add_product'), $categoryID, $productCode );
-
+    /**
+     * Adds a product to an existing category. 
+     *
+     * @param int $categoryId
+     * @param string $productCode
+     * @return ResponseList object
+     * @throws EmptyRequest request object with errors    
+     */
+    public function addProduct(int $categoryId, string $productCode) {
+        // Build the request URL
+        $baseUrl = Config::get('endpoints.base_url') . sprintf( Config::get('endpoints.category_add_product'), $categoryId, $productCode );
         try {
+            // Try to send the request
             $response = parent::sendRequestWithoutBody('PUT', $baseUrl);
         } catch (TransferException $e) {
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e);                
         }    
-        
-        // Handle the Response
+        // Return a ResponseList object
         return new ResponseList($response->getBody(), 'rate');
     }
-
-    public function removeProduct($categoryID, $productCode) {
+    /**
+     * Removes a product from an existing category
+     *
+     * @param int $categoryId
+     * @param string $productCode
+     * @return ResponseList object
+     * @throws EmptyRequest request object with errors    
+     */
+    public function removeProduct(int $categoryID, string $productCode) {
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . sprintf( Config::get('endpoints.category_remove_product'), $categoryID, $productCode );
-
-        $request = new EmptyRequest;
-
         try {
+            // Try to send the request
             $response = parent::sendRequestWithoutBody('DELETE', $baseUrl);
         } catch (TransferException $e) {
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e);                
         }    
-        
-        // Handle the Response
+        // Return a ResponseList object
         return new ResponseList($response->getBody(), 'rate');
     }
 }

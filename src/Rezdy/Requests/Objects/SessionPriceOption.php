@@ -1,5 +1,5 @@
 <?php
-namespace Rezdy\Requests\Availability;
+namespace Rezdy\Requests\Objects;
 
 use Rezdy\Requests\BaseRequest;
 use Rezdy\Requests\RequestInterface;
@@ -10,7 +10,7 @@ use Rezdy\Requests\RequestInterface;
  * @package Resources
  * @author Brad Ploeger
  */
-class PriceOption extends BaseRequest implements RequestInterface {
+class SessionPriceOption extends BaseRequest implements RequestInterface {
 
 		public function __construct($params = '') {
 			

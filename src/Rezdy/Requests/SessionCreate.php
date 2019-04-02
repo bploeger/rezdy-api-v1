@@ -1,16 +1,13 @@
 <?php
-namespace Rezdy\Requests\Availability;
-
-use Rezdy\Requests\BaseRequest;
-use Rezdy\Requests\RequestInterface;
+namespace Rezdy\Requests;
 
 /**
- * Creates and verifies the SessionCreateRequest resource
+ * Creates and verifies the SessionCreate Request
  *
  * @package Resources
  * @author Brad Ploeger
  */
-class CreateRequest extends BaseRequest implements RequestInterface {	
+class SessionCreate extends BaseRequest implements RequestInterface {	
 
 	public function __construct($params = '') {
 		//Set the required properties of the object and the required datatype

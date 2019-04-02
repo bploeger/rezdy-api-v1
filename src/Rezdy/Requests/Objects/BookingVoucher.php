@@ -1,5 +1,5 @@
 <?php
-namespace Rezdy\Requests\Booking;
+namespace Rezdy\Requests\Objects;
 
 use Rezdy\Requests\BaseRequest;
 
@@ -9,7 +9,7 @@ use Rezdy\Requests\BaseRequest;
  * @package Requests
  * @author Brad Ploeger
  */
-class Voucher extends BaseRequest {
+class BookingVoucher extends BaseRequest {
 
 		public function __construct($params = '') {
 			

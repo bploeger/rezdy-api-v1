@@ -1,8 +1,5 @@
 <?php
-namespace Rezdy\Requests\Booking;
-
-use Rezdy\Requests\BaseRequest;
-use Rezdy\Requests\RequestInterface;
+namespace Rezdy\Requests;
 
 /**
  * Creates and verifies the BookingSearchRequest resource
@@ -10,7 +7,7 @@ use Rezdy\Requests\RequestInterface;
  * @package Requests
  * @author Brad Ploeger
  */
-class SearchRequest extends BaseRequest implements RequestInterface {	
+class BookingSearch extends BaseRequest implements RequestInterface {	
 
 	public function __construct($params = '') {
 		

@@ -3,8 +3,8 @@ namespace Rezdy\Services;
 
 use Rezdy\Util\Config;
 
-use Rezdy\Requests\EmptyRequest;
 use Rezdy\Requests\Product;
+use Rezdy\Requests\ProductUpdate;
 use Rezdy\Requests\MarketplaceSearch;
 use Rezdy\Requests\SimpleSearch;
 
@@ -22,113 +22,159 @@ use GuzzleHttp\Psr7;
  * @author Brad Ploeger
  */
 class ProductServices extends BaseService {
-
+    /**
+     * Creates a new product
+     *    
+     * @param Product $request object 
+     * @return ResponseStandard object
+     * @throws Product request object with errors     
+     */
 	public function create(Product $request) {
-		$baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.product_create');
-     		
-        // Verify the product request has the minimum information required prior to submission.
+		// Build the request URL
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.product_create');
+     	// Verify the Product object.
         if ( !$request->isValid() ) return $request;
-
-        // try to Send the request
         try {                   
+            // Try to send the request
             $response = parent::sendRequestWithBody('POST', $baseUrl, $request);
         } catch (TransferException $e) {            
+            // Handle a TransferException  
             return $this->returnExceptionAsErrors($e, $request);         
-        }    
-        
-        // Handle the Response
+        }   
+        // Return a ResponseStandard object
         return new ResponseStandard($response->getBody(), 'product');
     }
-
-    public function find(string $productCode) {
-		$baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.product_get') . $productCode;
-     		
-        // try to Send the request
+    /**
+     * Load an existing product by Product Code
+     *    
+     * @param string $productCode 
+     * @return ResponseStandard object
+     * @throws Product request object with errors     
+     */
+    public function get(string $productCode) {
+		// Build the request URL
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.product_get') . $productCode;     	
         try {                   
+            // Try to send the request
             $response = parent::sendRequestWithBody('GET', $baseUrl);
         } catch (TransferException $e) {            
+            // Handle a TransferException  
             return $this->returnExceptionAsErrors($e);         
         }    
-        
-        // Handle the Response
+        // Return a ResponseStandard object
         return new ResponseStandard($response->getBody(), 'product');
     }
-
-    public function update(string $productCode, Product $request) {
-        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.product_get') . $productCode;
-        
-        // try to Send the request
+    /**
+     * Updates a product.
+     *       
+     * @param string $productCode 
+     * @param ProductUpdate $request object 
+     * @return ResponseStandard object
+     * @throws ProductUpdate request object with errors     
+     */
+    public function update(string $productCode, ProductUpdate $request) {
+        // Build the request URL
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.product_get') . $productCode;        
         try {                   
+            // Try to send the request
             $response = parent::sendRequestWithBody('PUT', $baseUrl, $request);
         } catch (TransferException $e) {            
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e, $request);         
-        }    
-        
-        // Handle the Response
+        }  
+        // Return a ResponseStandard object
         return new ResponseStandard($response->getBody(), 'product');
     }
-
+    /**
+     * Deletes a product.
+     *       
+     * @param string $productCode 
+     * @return ResponseNoData object
+     * @throws EmptyRequest request object with errors     
+     */
     public function delete(string $productCode) {
-        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.product_get') . $productCode;
-        
-        // try to Send the request
+        // Build the request URL
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.product_get') . $productCode;        
         try {                   
+            // Try to send the request
             $response = parent::sendRequestWithBody('DELETE', $baseUrl);
         } catch (TransferException $e) {            
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e);         
         }    
-        
-        // Handle the Response
+        // Return a ResponseNoData object
         return new ResponseNoData('The product has been deleted');
     }
-
+    /**
+     * Searches a product that matches a search request.
+     *    
+     * NOTE:  If the search string is empty, all your products will be returned.   Use this service 
+     * when acting as a supplier, to load your own products. If you're acting as an agent, use the 
+     * searchMarketplace function
+     *   
+     * @param SimpleSearch $request object 
+     * @return ResponseList object
+     * @throws SimpleSearch request object with errors     
+     */
     public function search(SimpleSearch $request) {
-        
-        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.product_create');
-                     
+        // Build the request URL
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.product_create');                     
         try {
+            // Try to send the request
             $response = parent::sendRequestWithoutBody('GET', $baseUrl, $request->toArray());
         } catch (TransferException $e) {
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e);                
         }    
-        
-        // Handle the Response
+        // Return a ResponseList object
         return new ResponseList($response->getBody(), 'products');
     }
-
+    /**
+     * Load products from the Rezdy Marketplace.
+     *    
+     * NOTE:  Use this service when acting as an agent, to find products that are available for 
+     * you to book.
+     *   
+     * @param MarketplaceSearch $request object 
+     * @return ResponseList object
+     * @throws SimpleSearch request object with errors     
+     */
     public function searchMarketplace(MarketplaceSearch $request) {
-        
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.product_create');
-
-        // Verify the Search Request.
-        if ( !$request->isValid() ) return $request;
-                  
+        // Verify the MarketplaceSearch request object.
+        if ( !$request->isValid() ) return $request;                  
         try {
+            // Try to send the request
             $response = parent::sendRequestWithoutBody('GET', $baseUrl, $request->toArray());
         } catch (TransferException $e) {
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e, $search);                
         }    
-        
-        // Handle the Response
+        // Return a ResponseList object
         return new ResponseList($response->getBody(), 'products');
     }
-
+    /**
+     * Gets a list of pickup locations configured for this product.
+     *    
+     * @param string $productCode   
+     * @param SimpleSearch $request object 
+     * @return ResponseList object
+     * @throws SimpleSearch request object with errors     
+     */
     public function getPickups(string $productCode, SimpleSearch ...$request) {
-
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . sprintf( Config::get('endpoints.product_pickups'), $productCode );
-
+        // Pluck the SimpleSearch object if passed
         $request = $this->parseOptionalArray($request, new SimpleSearch());
-
         try {
+            // Try to send the request
             $response = parent::sendRequestWithoutBody('GET', $baseUrl, $request->toArray());
         } catch (TransferException $e) {
+            // Handle a TransferException
             return $this->returnExceptionAsErrors($e, $search);                
         }   
-        
-        // Handle the Response
+        // Return a ResponseList object
         return new ResponseList($response->getBody(), 'pickupLocations');
-
     }
-
-
 }

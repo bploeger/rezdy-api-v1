@@ -3,6 +3,8 @@ namespace Rezdy\Requests;
 
 use Carbon\Carbon;
 
+use Util\Validate;
+
 use Rezdy\Exceptions\RezdyException;
 
 /**
@@ -19,121 +21,7 @@ abstract class BaseRequest {
     protected $setClassMap = [];
     protected $addClassMap = [];
 
-    protected $enumFields = [ 
-                            'booking-modes'         =>  [   'NO_DATE','DATE_ENQUIRY','INVENTORY'                                              ],
-                            
-                            'credit-card-type'      =>  [   'VISA', 'MASTERCARD', 'AMEX', 'DINERS','DISCOVER', 'JCB'                          ],
-
-                            'commission-type'       =>  [   'NET_RATE','PERCENT'                                                              ],
-                            
-                            'confirm-modes'         =>  [   'MANUAL','AUTOCONFIRM','MANUAL_THEN_AUTO','AUTO_THEN_MANUAL'                      ],
-
-                            'currency-types'        =>  [   'AED','ANG','ARS','AUD','AWG','AZN','BGN','BHD','BOB','BRL','BYR','CAD','CHF','CLP',
-                                                            'CNY','COP','CZK','DKK','EGP','EUR','FJD','GBP','GEL','HKD','HRK','HUF','IDR','ILS',
-                                                            'INR','ISK','JOD','JPY','KES','KRW','KWD','KZT','LTL','LVL','MAD','MKD','MUR','MXN',
-                                                            'MYR','NGN','NOK','NZD','PGK','PHP','OMR','PEN','PLN','PYG','QAR','RON','RSD','RUB',
-                                                            'SAR','SBD','SEK','SGD','SRD','SYP','THB','TOP','TRY','TWD','UAH','USD','UYU','VEF',
-                                                            'VUV','WST','XAF','XOF','XPF','YER','ZAR','AFA','ALL','DZD','AMD','BSD','BDT','BBD',
-                                                            'BZD','BMD','BWP','BND','BIF','KHR','CVE','KYD','KMF','BAM','CRC','CUP','CYP','DJF',
-                                                            'DOP','XCD','ECS','SVC','ERN','EEK','ETB','FKP','CDF','GMD','GHS','GIP','GTQ','GNF',
-                                                            'GWP','GYD','HTG','HNL','IRR','IQD','JMD','AOA','KGS','KIP','LAK','LBP','LRD','LYD',
-                                                            'LSL','MOP','MGF','MGA','MWK','MVR','MTL','MRO','MDL','MNT','MZM','MMK','NAD','NPR',
-                                                            'NIO','KPW','PKR','PAB','RWF','STD','SCR','SLL','SKK','SIT','SOS','LKR','SHP','SDD',
-                                                            'SZL','TJS','TZS','TTD','TND','TMM','UGX','UZS','VND','YUM','ZMK','ZWD','AFN','MZN',
-                                                            'UYI','ZMW','GHC','GGP','IMP','JEP','TRL','TVD'                                   ],
-
-                            'extra-price-type'      =>  [   'ANY','FIXED','QUANTITY'                                                          ],
-
-                            'field-type'            =>  [   'String','List','Boolean','Phone','Date'                                          ],
-
-                            'gender'                =>  [   'MALE','FEMALE'                                                                   ],
-
-                            'online-payment-options'=>  [   'CREDITCARD','PAYPAL','BANKTRANSFER','CASH','INVOICE','EXTERNAL','ALIPAY'         ],
-
-                            'price-group-type'      =>  [   'EACH','TOTAL'                                                                    ],
-
-                            'product-type'          =>  [   'ACTIVITY','DAYTOUR','MULTIDAYTOUR','ENQUIRY','PRIVATE_TOUR','TICKET','RENTAL',
-                                                            'CHARTER','EVENT','PASS','HOPONHOPOFF','GIFT_CARD','TRANSFER','LESSON',
-                                                            'MERCHANDISE','CUSTOM'                                                            ],
-
-                            'source'                =>  [   'ONLINE','INTERNAL','PARTNERS','COMMUNITY','MARKETPLACE','MARKETPLACE_PREF_RATE', 
-                                                            'API'                                                                             ],
-
-                            'status'                =>  [   'PROCESSING','NEW','ON_HOLD','PENDING_SUPPLIER','PENDING_CUSTOMER','CONFIRMED', 
-                                                            'CANCELLED','ABANDONED_CART'                                                      ],
-
-                            'tag-types'             =>  [   'TYPE','CATEGORY','INTEREST','INTENSITY','SKILL_LEVEL','AGE','ACCESSIBILITY',
-                                                            'SUITABILITY'                                                                     ],
-
-                            'tag-values'            =>  [   'TYPE'          => ['ATTRACTION','TOUR','ACTIVITY','RENTAL','EVENT','LESSON',
-                                                                                'TICKET','TRANSPORT'                                          ],
-
-                                                            'CATEGORY'      => ['ABSEILING','ACCOMMODATION PACKAGE','ACTIVE_TOURS',
-                                                                                'ADVENTURE_TOURS','AEROBATIC_FLIGHTS','ANIMAL_EXPERIENCES',
-                                                                                'AQUARIUM_&_ZOO','ARCHERY','ART_&_CRAFT_CLASSES','ATTRACTION',
-                                                                                'BACKPACKERS_TOURS','BALLOON_FLIGHTS','BEER_TOURS',
-                                                                                'BICYCLE_RENTALS','BOAT_DAY_TRIPS','BREWERY_TOURS',
-                                                                                'BRIDGE_CLIMBING','BUNGEE_JUMPING','BUS_TOURS','BUSHWALKING',
-                                                                                'CAMPING','CANOEING','CANYONING','CAR_RENTAL','CAVING',
-                                                                                'CHARTER_BOAT','CITY_BUS_TOURS','CITY_TOURS','CLIMBING',
-                                                                                'COACH_TOURS','COOKING_LESSONS','CORPORATE','CRUISES',
-                                                                                'CULTURAL_TOURS','CYCLING_TOURS','DANCE_CLASSES','DAY_TOURS',
-                                                                                'DISTILLERY_TOURS','DIVING','DOG_MUSHING',
-                                                                                'DRIVING_GUIDED_TOURS','ECO-TOURS','ESCAPE_ROOM','EXCURSION',
-                                                                                'EXTREME_FLYING','EXTREME_SPORTS','FAMILY_FUN','FARM_TOURS',
-                                                                                'FERRY','FESTIVAL','FISHING','FITNESS','FLIGHT_SIMULATOR',
-                                                                                'FLYING_FOX','FLYING_LESSONS','FOOD_TOURS',
-                                                                                'FOUR_WHEEL_DRIVE_TOURS','GARDEN_TOURS','GHOST_TOURS',
-                                                                                'GLIDING','GO-KARTING','GOLF_LESSONS_&_ROUNDS','GOLFING',
-                                                                                'GORGE_WALKING','GOURMET_TOURS','GUIDED_TOURS','HARLEY_RIDES',
-                                                                                'HELICOPTER_FLIGHTS','HIGH_ROPES_COURSE','HIKING_&_TREKKING',
-                                                                                'HISTORIC_TOURS','HORSE_RIDING','HOT_AIR_BALLOONING',
-                                                                                'JET_FIGHTER','JET_SKIING','JETBOAT','JOY_FLIGHTS','KAYAKING',
-                                                                                'KITESURFING','LASER_SHOOTING','LUXURY','LUXURY_CAR',
-                                                                                'MARTIAL_ARTS','MOTORBIKE_TOURS','MOUNTAIN_BIKING',
-                                                                                'MULTI-SPORT_TOURS','MUSEUM','MUSIC_EXPERIENCES','OFF_ROAD',
-                                                                                'OUTDOOR_EVENTS','PAINTBALL','PARAGLIDING','PARASAILING',
-                                                                                'PERSONAL_CHEF','PERSONALISED_GIFTS','PHOTOGRAPHY_LESSONS',
-                                                                                'PHOTOGRAPHY_TOURS','PRIVATE_TOURS','PUB_TOURS','QUAD_BIKING',
-                                                                                'RACE_CAR_DRIVING','RAFTING','RALLY_DRIVING','ROMANTIC_DINING',
-                                                                                'SAFARIS','SAILING','SCENIC_FLIGHTS','SCENIC_TOURS',
-                                                                                'SCUBA_DIVING_&_SNORKELING','SEAPLANE_FLIGHTS','SEGWAYS',
-                                                                                'SELF-DRIVING','SHOOTING','SHOPPING_TOURS','SHUTTLE',
-                                                                                'SIGHTSEEING','SKATING','SKIING_&_SNOW','SKYDIVING',
-                                                                                'SMALL_GROUP_TOURS','SPIRIT_TASTING','SPORTING_ATTRACTIONS',
-                                                                                'SPORTS_TOURS','STAND_UP_PADDLEBOARDING','STEAM_TRAINS',
-                                                                                'STUNT_DRIVING','SURFING','SWIM_WITH_DOLPHINS','TEAM_BUILDING',
-                                                                                'TENNIS','THEME_PARKS','TIGER_MOTH','V8_CAR_RACING',
-                                                                                'V8_EXPERIENCES','VIRTUAL_REALITY','WALKING_TOURS',
-                                                                                'WATER_SPORT','WHALE_&_DOLPHIN WATCHING','WHITE_WATER_RAFTING',
-                                                                                'WILDLIFE_TOURS','WILDLIFE_WATCHING','WINDSURFING',
-                                                                                'WINE_TASTING','WINTER_SPORTS','YOGA_&_PILATES','ZIPLINING',
-                                                                                'ZORBING'                                                      ],
-
-                                                            'INTEREST'       => ['FAMILY','CULTURAL','SIGHTSEEING','LIFESTYLE','LUXURY',
-                                                                                 'RELAXATION','ROMANCE','SPECIAL_INTEREST','ECOTOURISM',
-                                                                                 'VOLUNTOURISM'                                                ],
-                                                            
-                                                            'INTENSITY'      => ['RELAXED','QUIET','ACTIVE','SPORTY','EXTREME'                 ],
-                                                            
-                                                            'SKILL_LEVEL'    => ['BEGINNER','INTERMEDIATE','ADVANCED','EXPERT'                 ],
-                                                            
-                                                            'AGE'            => ['ADULT','INFANT','CHILD','TEENAGER','SENIOR'                  ],
-                                                            
-                                                            'ACCESSIBILITY'  => ['VISION_IMPAIRED','HEARING_IMPAIRED','PARAPLEGIC',
-                                                                                 'QUADRIPLEGIC','EPILEPTIC','ASTHMATIC'                        ],
-
-                                                            'SUITABILITY'    => ['ANY_WEATHER','DAY_TIME','NIGHT_TIME','FAMILY','GIFT_VOUCHER',
-                                                                                 'GROUPS','ONLY_ADULTS','ONLY_MEN','ONLY_WOMEN','SCHOOLS'      ],
-                                                                                                                                               ],
-
-                            'title'                 =>  [   'MR','MS','MRS','MISS'                                                             ], 
-
-                            'voucher-status'        =>  [   'ISSUED','REDEEMED','PARTIALLY_REDEEMED','EXPIRED'                                 ], 
-
-                            'voucher-value-type'    =>  [   'VALUE_LIMITPRODUCT','VALUE','VALUE_LIMITCATALOG','PERCENT_LIMITPRODUCT',
-                                                            'PERCENT','PERCENT_LIMITCATALOG','PRODUCT'                                         ],  
-                            ];
+    protected $enumFields = [];
 
     // Sets parameter values
     public function set($data, $key = null) {
@@ -194,45 +82,36 @@ abstract class BaseRequest {
     }
 
     // Attached an item in the Request based on the class of item passed to the function
-    public function attach($data) {
-        
+    public function attach($data) {        
         // Check if the value passed was an array
         if (is_array($data)) {
             // Go through each item recursively
             foreach ($data as $item) {
                 $this->attach($item);
             }       
-        } else {
-            
+        } else {            
             // Check the class of the data passed
             $class = get_class($data);
-
+            // Verify if the item is a PickupLocation request object
             if ($class == 'Rezdy\Requests\Objects\PickupLocation') {
                 $data->isValid();
             }
 
             // Check if is a single item class
-            if (array_key_exists($class, $this->setClassMap)) {
-               
+            if (array_key_exists($class, $this->setClassMap)) {               
                 // Use the Lookup Array
-                $type = $this->setClassMap[$class];
-                
+                $type = $this->setClassMap[$class];                
                 // Set the value
-                $this->$type = $data;
-            
+                $this->$type = $data;            
             // Check if is a multiple item class
-            } elseif(array_key_exists($class, $this->addClassMap)) {
-               
+            } elseif(array_key_exists($class, $this->addClassMap)) {               
                 // Use the Lookup Array
-                $type = $this->addClassMap[$class];
-              
+                $type = $this->addClassMap[$class];              
                 // Handles a Booking Voucher item which is only an array of strings.
-                if ($class == 'Rezdy\Requests\Booking\Voucher') {  
-                    
+                if ($class == 'Rezdy\Requests\Booking\Voucher') {                     
                     // Set the value
-                    $this->$type[] = $data->string;         
-                } else {
-                    
+                    $this->$type[] = $data->string;     
+                } else {                    
                     // Set the value
                     $this->$type[] = $data;
                 }
@@ -246,6 +125,7 @@ abstract class BaseRequest {
 
     /**
      * Get the requested value from an array, or return the default
+     *
      * @param array $array - array to search for the provided array key
      * @param string $item - array key to look for
      * @param string $default - value to return if the item is not found, default is null
@@ -272,7 +152,7 @@ abstract class BaseRequest {
     protected function setValue($param, $value) {
        //Verify the parameter is acceptable for the object
        if ((count($this->requiredParams) && array_key_exists($param, $this->requiredParams)) || array_key_exists($param, $this->optionalParams) ) {                  
-                //Set the Paramater
+                // Set the Paramater
                 $this->$param = $value; 
         }  
     }   
@@ -298,16 +178,11 @@ abstract class BaseRequest {
     }
 
     protected function checkType($param, $type) {
-
         $explode = explode('|', $type);
-
         $lookup = $explode[0];
-
-        if (isset($this->$param)) {
-            
+        if (isset($this->$param)) {          
             // Parse the type required
-            switch ($lookup) {
-                
+            switch ($lookup) {                
                 // Verify the data is a string
                 case 'string':
                     if(!is_string($this->$param)) { 
@@ -321,7 +196,6 @@ abstract class BaseRequest {
                         }                       
                     }
                     break; 
-
                 // Verify the data is a string or an array of strings
                 case 'string-or-array':
                     if( is_string($this->$param) ) {                        
@@ -338,7 +212,6 @@ abstract class BaseRequest {
                         $this->setError($param . ' is not a string or array');
                     }
                     break;  
-
                 // Verify the data is a integer or an array of integers
                 case 'integer-or-array':
                     if( is_integer($this->$param) ) {                        
@@ -355,7 +228,6 @@ abstract class BaseRequest {
                         $this->setError($param . ' is not a integer or array');
                     }
                     break;  
-
                 // Verify the data is an array of strings
                 case 'array-of-string':
                     if( is_array($this->$param) ) {
@@ -370,7 +242,6 @@ abstract class BaseRequest {
                         $this->setError($param . ' is not an array of strings');
                     }
                     break;
-
                 // Verify the data is a integer
                 case 'integer':
                     if(!is_int($this->$param)) {                         
@@ -383,7 +254,6 @@ abstract class BaseRequest {
                            // It Cannot be Fixed
                            $this->setError($param . ' is not an integer'); 
                        }
-
                        //Handle Ranges
                        if (isset($explode[1])) {
                         $range = explode('-', $explode[1]);
@@ -394,53 +264,50 @@ abstract class BaseRequest {
                         }                        
                     }
                     break;  
-
                 // Verify the data is boolean
-                case 'boolean':                
-
-                    if(!is_bool($this->$param)) { 
-                        
+                case 'boolean':              
+                    // Verify it is a boolean
+                    if(!is_bool($this->$param)) {                         
                         // Try to fix the issue
                         if (strtoupper($this->$param) === 'TRUE' || $this->$param === 1) {
                             // Handles common errors that recasting would not handle properly
                             $this->$param = true;
                         } else {
-                            // recast the value
+                            // Recast the value
                             $this->$param = false; 
                         } 
-
                         // Verify the Fix Worked
                         if(!is_bool($this->$param)) {
+                            // Set an Error
                             $this->setError($param . ' is not a boolean');
                         } 
                     }
-
                     // Cast Correction to string
                     if (is_bool($this->$param)) {
                         if ($this->$param) {
+                            // Recast the value
                             $this->$param = 'true';
                         } else {
+                            // Recast the value
                             $this->param = 'false';
                         }
-                    } 
-
-                    break;  
-
+                    }
+                    break; 
                 // Verify the data is numeric
                 case 'numeric':
                     if(!is_numeric($this->$param)) {                                    
                         //Try and fix the issue
                         $newParam = (float) $this->$param;
-
                         // Check the fix
                         if (is_numeric($newParam)) {
+                            // Recast the value
                             $this->$param = $newParam;
                         } else {
+                            // Set an error
                             $this->setError($param . ' is not numeric');
                         }
                     }
-                    break;  
-
+                    break; 
                 // Verify the data is the ISO8601 Format
                 case 'ISO8601':
                     // Verify it is a String First
@@ -451,7 +318,6 @@ abstract class BaseRequest {
                     $dateTime = Carbon::parse($this->$param);
                     // Was the date time object created
                     if ($dateTime) {   
-
                         //Check to make sure the Param is in the proper format (eg. '2019-03-01T12:30:00Z' )
                         if (!(  $dateTime->toIso8601ZuluString() === $this->$param)) {
                             // Try to Fix the Input
@@ -461,17 +327,16 @@ abstract class BaseRequest {
                                 //Fix it
                                 $this->$param = $newParam;                                
                             } else {
+                                // Set an error
                                 $this->setError($param . ' is not in the proper format [YYYY-MM-DDTHH:MM:SSZ]');
                             }                          
                         }
-
                     } else {
                         // the string was able to be parsed and is invalid
                         $this->setError($param . ' could not be parsed');
                     }
-
                     break;  
-
+                // Verify the data is the date-time Format
                 case 'date-time':
                     // Verify it is a String First
                     if(!is_string($this->$param)) { 
@@ -499,35 +364,37 @@ abstract class BaseRequest {
                         $this->setError($param . ' could not be parsed');
                     }
                     break;
-
+                // Verify it is an array of SessionPriceOption objects
                 case 'priceOptionArray':
                     if(!is_array($this->$param)) { 
                         $this->setError($param . ' is not a price option array');
                     }
                     foreach ($this->$param as $obj) {
-                        if (get_class($obj) !== 'Rezdy\Requests\Availability\PriceOption') {
+                        if (get_class($obj) !== 'Rezdy\Requests\Objects\SessionPriceOption') {
+                            // Set an Error
                             $this->setError($param . ' is not a price option class');
                         }
                     }
                     break; 
-
                 // Verify the data is a string with a properly formatted tag or an array of tags
                 case 'tag-or-array':
                     if( is_string($this->$param) ) {                        
                         // Is a string Verify the Tags
                         $tag = explode(':', $this->$param);
                         if (count($tag) != 2) {
+                            // Set an Error
                             $this->setError($param . ' the Tag is not formatted properly [TAGTYPE:TAGEVALUE]');                            
                         } else {
                             // Load the Tag Type Values
-                            $acceptable_tag_types = $this->enumFields['tag-types'];
-                            
+                            $acceptable_tag_types = $this->enumFields['tag-types'];                            
                             if (!in_array($tag[0], $acceptable_tag_types)) {
+                                    // Set an Error
                                     $this->setError($tag[0] . ' is not a valid Tag Type.');
                             } else {
                                 // Load the Tag Values
                                 $acceptable_tag_values = $this->enumFields['tag-values'][$tag[0]];
                                 if (!in_array($tag[1], $acceptable_tag_values)) {
+                                    // Set an Error
                                     $this->setError($tag[1] . ' is not a valid Tag Value for ' . $tag[0] .'.');
                                 }
                             }
@@ -536,22 +403,25 @@ abstract class BaseRequest {
                         // Is an ARRAY, verify the array contents
                         foreach ($this->$param as $item) {
                             if( !is_string($item) ) {
+                                // Set an Error
                                 $this->setError($param . ' is not an array of tag values');
                             } else {
                                 // Is a string Verify the Tags
                                 $tag = explode(':', $item);
                                 if (count($tag) != 2) {
+                                    // Set an Error
                                     $this->setError($param . ' the Tag is not formatted properly [TAGTYPE:TAGEVALUE]');                            
                                 } else {
                                     // Load the Tag Type Values
-                                    $acceptable_tag_types = $this->enumFields['tag-types'];
-                                    
+                                    $acceptable_tag_types = $this->enumFields['tag-types'];                                    
                                     if (!in_array($tag[0], $acceptable_tag_types)) {
+                                            // Set an Error
                                             $this->setError($tag[0] . ' is not a valid Tag Type.');
                                     } else {
                                         // Load the Tag Values
                                         $acceptable_tag_values = $this->enumFields['tag-values'][$tag[0]];
                                         if (!in_array($tag[1], $acceptable_tag_values)) {
+                                            // Set an Error
                                             $this->setError($tag[1] . ' is not a valid Tag Value for ' . $tag[0] .'.');
                                         }
                                     }
@@ -563,34 +433,32 @@ abstract class BaseRequest {
                         $this->setError($param . ' in not formatted properly [TAGTYPE:TAGEVALUE]');
                     }
                     break;    
-
+                // Handle enums
                 default:
+                    // Build a new Lookup Array
                     $lookup = explode('.', $type);
-                    
+                    //Load enumFields
+                    $this->enumFields = Validate::enumFields();
                     // Handle Value Lists
-                    if ($lookup[0] == 'enum' && isset($this->enumFields[$lookup[1]])) {
-                        
+                    if ($lookup[0] == 'enum' && isset($this->enumFields[$lookup[1]])) {                        
                         // Load the Acceptable Values
                         $acceptable_field_types = $this->enumFields[$lookup[1]];
                         if (!in_array($this->$param, $acceptable_field_types)) {
+                            // Set an Error
                             $this->setError($this->$param . ' is not acceptable value for ' . $param);
                         }
-
                     } else {
                         // The value type is not on our list
                         $this->setError($type . ' is not a valid datatype');
                     } 
                     break;
             }
-
-        }
-        
+        }        
     }  
 
     protected function isValidRequest() {        
         // Verify all the parameters
         $this->verifyParams();
-
         // Check for Errors        
         return (!isset($this->error));        
     }

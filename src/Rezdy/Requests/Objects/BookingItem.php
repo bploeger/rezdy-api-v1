@@ -1,5 +1,5 @@
 <?php
-namespace Rezdy\Requests\Booking;
+namespace Rezdy\Requests\Objects;
 
 use Rezdy\Requests\BaseRequest;
 
@@ -9,7 +9,7 @@ use Rezdy\Requests\BaseRequest;
  * @package Requests
  * @author Brad Ploeger
  */
-class Item extends BaseRequest {
+class BookingItem extends BaseRequest {
 
 		public function __construct($params = '') {
 			
@@ -34,8 +34,8 @@ class Item extends BaseRequest {
 									]; 
 
 			//Sets the class mapping for multiple item sets to the request 				
-			$this->addClassMap  =	[	'Rezdy\Requests\Booking\Extra'				=> 'extras',
-										'Rezdy\Requests\Booking\ItemQuantity'		=> 'quantities'
+			$this->addClassMap  =	[	'Rezdy\Requests\Objects\BookingExtra'		=> 'extras',
+										'Rezdy\Requests\Objects\BookingItemQuantity'=> 'quantities'
 									];	
 
 			if (is_array($params)) {

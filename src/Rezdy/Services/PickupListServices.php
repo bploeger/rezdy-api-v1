@@ -20,90 +20,121 @@ use GuzzleHttp\Psr7;
  * @author Brad Ploeger
  */
 class PickupListServices extends BaseService {
-
+    /**
+     * Creates a new pickup list 
+     *    
+     * @param PickupList $request object 
+     * @return ResponseStandard object
+     * @throws PickupList request object with errors     
+     */
 	public function create(PickupList $request) {
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.pickup_create');
-            
-        // Verify the product request has the minimum information required prior to submission.
+        // Verify the PickupList object.
         if ( !$request->isValid() ) return $request;
-
-        // try to Send the request
         try {                   
+            // Try to send the request
             $response = parent::sendRequestWithBody('POST', $baseUrl, $request);
         } catch (TransferException $e) {            
+            // Handle a TransferException  
             return $this->returnExceptionAsErrors($e, $request);         
         }    
-        
-        // Handle the Response
+        // Return a ResponseStandard object
         return new ResponseStandard($response->getBody(), 'pickupList');
     }
-
+    /**
+     * Updates a pickup list.
+     *
+     * NOTE: This service should not be used for partial updates. A full pickup list object with the 
+     * desired pick up locations should be passed as input   
+     *  
+     * @param PickupList $request object 
+     * @return ResponseStandard object
+     * @throws PickupList request object with errors     
+     */
     public function update(int $pickuplistId, PickupList $request) {
-        
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.pickup_create') . '/' . $pickuplistID;
-            
-        // Verify the product request has the minimum information required prior to submission.
+        // Verify the PickupList object.
         if ( !$request->isValid() ) return $request;
-
-        // try to Send the request
-        try {                   
+        try { 
+            // Try to send the request                  
             $response = parent::sendRequestWithBody('PUT', $baseUrl, $request);
         } catch (TransferException $e) {            
+            // Handle a TransferException  
             return $this->returnExceptionAsErrors($e, $request);         
         }    
-        
-        // Handle the Response
+        // Return a ResponseStandard object
         return new ResponseStandard($response->getBody(), 'pickupList');
     }
-
-    public function find(int $pickuplistId) {
-        
-        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.pickup_create') . '/' . $pickuplistId;
-            
-        // try to Send the request
-        try {                   
+    /**
+     * Retrieves a pickup list
+     *   
+     * @param int $pickupListId 
+     * @return ResponseStandard object
+     * @throws PickupList request object with errors     
+     */
+    public function get(int $pickupListId) {
+        // Build the request URL
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.pickup_create') . '/' . $pickupListId;            
+        try {  
+            // Try to send the request                 
             $response = parent::sendRequestWithoutBody('GET', $baseUrl);
         } catch (TransferException $e) {            
+            // Handle a TransferException  
             return $this->returnExceptionAsErrors($e, $request);         
         }    
-        
-        // Handle the Response
+        // Return a ResponseStandard object
         return new ResponseStandard($response->getBody(), 'pickupList');
     }
-
-    public function search(string ...$search) {
-        
+    /**
+     * Searches pickup lists.
+     *  
+     * NOTE: To retrieve all pick up lists, omit the searchString parameter
+     *
+     * @param string|optional $searchString 
+     * @return ResponseList object
+     * @throws EmptyRequest object with errors     
+     */
+    public function search(string $searchString = null) {
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.pickup_create');
-
-        if (count($search)) {
-            $request = ['searchString' =>   $search[0]];
+        // Handle creation of the query array
+        if ($searchString != null) {
+            // Add the searchString to the query array
+            $query['searchString'] = $searchString;
         } else {
-            $request = [];
-        }
-
-        // try to Send the request
-        try {                   
-            $response = parent::sendRequestWithoutBody('GET', $baseUrl, $request);
+            // Create an empty query array
+            $query = [];
+        }        
+        try { 
+            // Try to send the request                  
+            $response = parent::sendRequestWithoutBody('GET', $baseUrl, $query);
         } catch (TransferException $e) {            
-            return $this->returnExceptionAsErrors($e, $request);         
-        }    
-
-        // Handle the Response
-        return new ResponseList($response->getBody(), 'pickupListList');
-    }
-
-    public function delete(int $pickupListId) {
-        
-         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.pickup_create') . '/' . $pickupListId;
-
-         // try to Send the request
-        try {                   
-            $response = parent::sendRequestWithoutBody('DELETE', $baseUrl);
-        } catch (TransferException $e) {            
+            // Handle a TransferException  
             return $this->returnExceptionAsErrors($e);         
         }    
-        
-        // Handle the Response
+        // Return a ResponseList object
+        return new ResponseList($response->getBody(), 'pickupListList');
+    }
+    /**
+     * Deletes a pickup list
+     *  
+     * @param int $pickupListId
+     * @return ResponseNoData object
+     * @throws EmptyRequest object with errors     
+     */
+    public function delete(int $pickupListId) {
+        // Build the request URL
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.pickup_create') . '/' . $pickupListId;
+        try {                   
+            // Try to send the request
+            $response = parent::sendRequestWithoutBody('DELETE', $baseUrl);
+        } catch (TransferException $e) {            
+            // Handle a TransferException 
+            return $this->returnExceptionAsErrors($e);         
+        }    
+        // Return a ResponseNoData object
         return new ResponseNoData('The pickup list has been deleted');
 
     }

@@ -1,5 +1,5 @@
 <?php
-namespace Rezdy\Requests\Booking;
+namespace Rezdy\Requests\Objects;
 
 use Rezdy\Requests\BaseRequest;
 
@@ -9,15 +9,15 @@ use Rezdy\Requests\BaseRequest;
  * @package Requests
  * @author Brad Ploeger
  */
-class ResellerUser extends BaseRequest {
+class BookingResellerUser extends BaseRequest {
 
 		public function __construct($params = '') {
 			
 			//Set the optional properties of the object and the required type
-			$this->optionalParams = [		"code"		=> "string",
-        									"email"		=> "string",
-        									"firstName"	=> "string",
-        									"lastName"	=> "string"		
+			$this->optionalParams = [		'code'		=> 'string',
+        									'email'		=> 'string',
+        									'firstName'	=> 'string',
+        									'lastName'	=> 'string'		
 									];
 
 			if (is_array($params)) {
