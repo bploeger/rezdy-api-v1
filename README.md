@@ -4,13 +4,13 @@
 ### This library utilizes [Carbon](https://carbon.nesbot.com/)
 
 ## Installing via Composer (recommended)
-[Composer](https://getcomposer.org/) is a dependency management tool for PHP that allows you to declare the dependencies your project needs and installs them into your project. In order to use the Constant Contact PHP SDK through composer, you must add "bploeger/rezdy-api-v1" as a dependency in your project's composer.json file.
+[Composer](https://getcomposer.org/) is a dependency management tool for PHP that allows you to declare the dependencies your project needs and installs them into your project. In order to use the Rezdy API PHP SDK through composer, you must add "bploeger/rezdy-api-v1" as a dependency in your project's composer.json file.
 ```javascript
  {
-        "require": {
-            "bploeger/rezdy-api-v1": "dev-master"
-        }
+    "require": {
+        "bploeger/rezdy-api-v1": "dev-master"
     }
+ }
 ```
 
 ### Manual Installation
