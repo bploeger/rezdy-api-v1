@@ -55,7 +55,9 @@ class Config {
                             'rate_product'              => 'rates/%s/products/%s',
                             'resources_add_session'     => 'resources/%s/session/%s',
                             'resources_sessions'        => 'resources/%s/sessions',
-                            'resources_session'         => 'resources/sessions',
+                            'resources_session'         => 'resources/session',
+                            'resource_remove'           => 'resources/%s/session/%s',
+                            'rezdy_connect'             => 'products/%s/rezdyConnect',
                         ],
         /**
          * Setting the version of the application used in REST Calls when setting the version header

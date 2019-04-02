@@ -22,6 +22,8 @@ use Rezdy\Services\PickupListServices;
 use Rezdy\Services\ProductServices;
 use Rezdy\Services\RateServices;
 use Rezdy\Services\ResourceServices;
+use Rezdy\Services\RezdyConnectServices;
+use Rezdy\Services\VoucherServices;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -134,5 +136,7 @@ class RezdyAPI
         $this->products = new ProductServices($apiKey, $client);
         $this->rates = new RateServices($apiKey, $client);
         $this->resources = new ResourceServices($apiKey, $client);
+        $this->rezdyConnect = new RezdyConnectServices($apiKey, $client);
+        $this->vouchers = new VoucherServices($apiKey, $client);
     }
 }

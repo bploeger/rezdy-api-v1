@@ -4,7 +4,7 @@ namespace Rezdy\Services;
 use Rezdy\Util\Config;
 
 use Rezdy\Requests\ResourceSessionSearch;
-use Rezdy\Requests\SessionSearch;
+use Rezdy\Requests\SessionResourceSearch;
 
 use Rezdy\Responses\ResponseStandard;
 use Rezdy\Responses\ResponseList;
@@ -16,7 +16,7 @@ use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Psr7;
 
 /**
- * Performs all actions pertaining to booking Rezdy API Rate Service Calls
+ * Performs all actions pertaining to the Rezdy API Resource Service Calls
  *
  * @package Services
  * @author Brad Ploeger
@@ -80,13 +80,35 @@ class ResourceServices extends BaseService {
   
 		}
 
-		public function getSessionResources(SessionSearch $request) {
+		public function getSessionResources(SessionResourceSearch $request) {
 			$baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.resources_session');
 
-			// WORKING HERE
+			// Verify the Session Resource Search request has the minimum information required prior to submission.
+        	if ( !$request->isValid() ) return $request;
+
+        	// try to Send the request
+	        try {                   
+	            $response = parent::sendRequestWithoutBody('GET', $baseUrl, $request->toArray());
+	        } catch (TransferException $e) {            
+	            return $this->returnExceptionAsErrors($e);         
+	        }  
+
+	        // Handle the Response
+	        return new ResponseList($response->getBody(), 'sessions');
+
 		}
 
-		public function removeSessionResources() {
+		public function removeSessionResources(int $resourceId, int $sessionId) {
+			$baseUrl = Config::get('endpoints.base_url') . sprintf(Config::get('endpoints.resource_remove'), $resourceId, $sessionId);
 
+			// try to Send the request
+	        try {                   
+	            $response = parent::sendRequestWithoutBody('GET', $baseUrl);
+	        } catch (TransferException $e) {            
+	            return $this->returnExceptionAsErrors($e);         
+	        }  
+
+	        // Handle the Response
+	        return new ResponseStandard($response->getBody(), 'resource');
 		}
 }
