@@ -23,13 +23,11 @@ class CompanyServices extends BaseService {
 	public function find($companyAlias) {
         $baseUrl = Config::get('endpoints.base_url') . sprintf( Config::get('endpoints.company_get'), $companyAlias );
         
-        $request = new EmptyRequest;
-
         // try to Send the request
         try {                   
             $response = parent::sendRequestWithOutBody('GET', $baseUrl);
         } catch (TransferException $e) {            
-            return $this->returnExceptionAsErrors($request, $e);         
+            return $this->returnExceptionAsErrors($e);         
         }    
         
         // Handle the Response

@@ -19,6 +19,9 @@ use Rezdy\Services\CustomerServices;
 use Rezdy\Services\ExtraServices;
 use Rezdy\Services\ManifestServices;
 use Rezdy\Services\PickupListServices;
+use Rezdy\Services\ProductServices;
+use Rezdy\Services\RateServices;
+use Rezdy\Services\ResourceServices;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -128,5 +131,8 @@ class RezdyAPI
         $this->extra = new ExtraServices($apiKey, $client);   
         $this->manifest = new ManifestServices($apiKey, $client);   
         $this->pickupList = new PickupListServices($apiKey, $client);   
+        $this->products = new ProductServices($apiKey, $client);
+        $this->rates = new RateServices($apiKey, $client);
+        $this->resources = new ResourceServices($apiKey, $client);
     }
 }

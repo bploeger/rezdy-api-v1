@@ -54,8 +54,7 @@ abstract class BaseService {
 
         // Parse the Array of Query Parameters to create the Query String
         $query = $this->buildQueryString($queryParams);
-              
-        $request = new Request($method, $baseUrl);
+        $request = new Request($method, $baseUrl);        
         return $this->client->send($request, [
             'query' => $query,
         ]);
@@ -92,12 +91,20 @@ abstract class BaseService {
         return $rezdyException;
     }
 
-    protected function returnExceptionAsErrors($request, $e) {        
+    protected function returnExceptionAsErrors(TransferException $e, $request = null) {  
+
+        // See if a request was passes, if a request was not passed create and empty request.
+        if (is_null($request)) {
+            $request = new EmptyRequest;
+        }
+
         // Convert the Exception to a Rezdy\Exceptions\RezdyException Class            
         $rezdyException = $this->convertException($e);
         
         // Append the Error Messages from the Exception to the Original Request
         $request->appendTransferErrors($rezdyException);
+
+        $request->hadError = true;
         
         return $request;
     }
@@ -117,5 +124,13 @@ abstract class BaseService {
             }                    
         }
         return trim($query, '&');
+    }
+
+    protected function parseOptionalArray(array $optionalArray, $default) {
+        if (count($optionalArray)) {
+            return $optionalArray[0];
+        } else {
+            return $default;
+        }
     }
 }

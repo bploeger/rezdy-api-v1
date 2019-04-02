@@ -13,6 +13,9 @@ class PickupLocation extends BaseRequest {
 
 		public function __construct($params = '') {
 			
+			$this->requiredParams = [		"locationName"					=> "string",
+									];
+
 			//Set the optional properties of the object and the required type
 			$this->optionalParams = [		"additionalInstructions"		=> "string",
                								"address"						=> "string",
@@ -27,5 +30,9 @@ class PickupLocation extends BaseRequest {
 			if (is_array($params)) {
 				$this->buildFromArray($params);
 			}	
+		}
+
+		public function isValid() {
+			return $this->isValidRequest();
 		}
 }

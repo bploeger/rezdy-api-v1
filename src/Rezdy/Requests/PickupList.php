@@ -7,7 +7,7 @@ namespace Rezdy\Requests;
  * @package Requests
  * @author Brad Ploeger
  */
-class Extra extends BaseRequest implements RequestInterface {
+class PickupList extends BaseRequest implements RequestInterface {
 
 	public function __construct($params = '') {
 		
@@ -19,7 +19,7 @@ class Extra extends BaseRequest implements RequestInterface {
 								];
 
 		//Sets the class mapping for multiple item sets to the request 		
-		$this->addClassMap = 	[ 	'Rezdy\Resources\Object\PickupLocation'	=> 'pickupLocations'
+		$this->addClassMap = 	[ 	'Rezdy\Requests\Objects\PickupLocation'	=> 'pickupLocations'
 								];
 
 		if (is_array($params)) {
@@ -28,6 +28,6 @@ class Extra extends BaseRequest implements RequestInterface {
 	}
 
 	public function isValid() {
-		return $this->isValidRequest();
+		return ( $this->isValidRequest() && count($this->pickupLocations) );
 	}
 }

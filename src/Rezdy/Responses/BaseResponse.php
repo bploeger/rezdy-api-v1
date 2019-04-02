@@ -11,10 +11,6 @@ abstract class BaseResponse {
 
 	protected $responseBody;
 
-	public $hadError = false;
-
-	public $errorMessage = null;
-
 	protected function parseResponse($response) {
 		//Convert the Response into a Standard Object
 		$this->responseBody = json_decode($response);		
@@ -25,17 +21,17 @@ abstract class BaseResponse {
 
 		if (!$this->responseBody->requestStatus->success) {
 			$this->hadError = true;
-			$this->errorMessage = $this->responseBody->requestStatus->error->errorMessage;
+			$this->error[] = $this->responseBody->requestStatus->error->errorMessage;
 		}		
 	}
 
 	public function setErrorManually($error) {
 		$this->hadError = true;
-		$this->errorMessage = $error;
+		$this->error[] = $error;
 	}
 
 	public function wasSuccessful() {
-		return !($this->hadError);
+		return ( !isset($this->hadError) );
 	}
 
 	public function __toString() {

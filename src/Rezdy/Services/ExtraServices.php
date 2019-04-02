@@ -21,17 +21,17 @@ use GuzzleHttp\Psr7;
  */
 class ExtraServices extends BaseService {
 
-	public function create(Extra $extra) {
+	public function create(Extra $request) {
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.extra_create');
             
-        // Verify the extra request has the minimum information required prior to submission.
-        if ( !$extra->isValid() ) return $extra;
+        // Verify the request has the minimum information required prior to submission.
+        if ( !$request->isValid() ) return $request;
 
         // try to Send the request
         try {                   
-            $response = parent::sendRequestWithBody('POST', $baseUrl, $extra);
+            $response = parent::sendRequestWithBody('POST', $baseUrl, $request);
         } catch (TransferException $e) {            
-            return $this->returnExceptionAsErrors($extra, $e);         
+            return $this->returnExceptionAsErrors($e, $request);         
         }    
         
         // Handle the Response
@@ -40,31 +40,29 @@ class ExtraServices extends BaseService {
 
     public function find($extraID) {
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.extra_get') . $extraID;
-
-        $request = new EmptyRequest;
                          
         // try to Send the request
         try {                   
             $response = parent::sendRequestWithOutBody('GET', $baseUrl);
         } catch (TransferException $e) {            
-            return $this->returnExceptionAsErrors($request, $e);         
+            return $this->returnExceptionAsErrors($e);         
         }    
         
         // Handle the Response
         return new ResponseStandard($response->getBody(), 'extra');
     }
 
-    public function update($extraID, Extra $extra) {
+    public function update($extraID, Extra $request) {
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.extra_update') . $extraID;
             
         // Verify the customer request has the minimum information required prior to submission.
-        if ( !$extra->isValid() ) return $extra;
+        if ( !$request->isValid() ) return $request;
 
         // try to Send the request
         try {                   
-            $response = parent::sendRequestWithBody('PUT', $baseUrl, $extra);
+            $response = parent::sendRequestWithBody('PUT', $baseUrl, $request);
         } catch (TransferException $e) {            
-            return $this->returnExceptionAsErrors($extra, $e);         
+            return $this->returnExceptionAsErrors($e, $request);         
         }    
         
         // Handle the Response
@@ -73,13 +71,11 @@ class ExtraServices extends BaseService {
 
     public function delete($extraID) {        
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.extra_delete') . $extraID;
-        
-        $request = new EmptyRequest;
    
         try {
             $response = parent::sendRequestWithoutBody('DELETE', $baseUrl);
         } catch (TransferException $e) {
-            return $this->returnExceptionAsErrors($request, $e);                
+            return $this->returnExceptionAsErrors($e);                
         }    
         
         // Handle the Response
@@ -96,7 +92,7 @@ class ExtraServices extends BaseService {
         try {
             $response = parent::sendRequestWithoutBody('GET', $baseUrl, $search);
         } catch (TransferException $e) {
-            return $this->returnExceptionAsErrors($session, $e);                
+            return $this->returnExceptionAsErrors($e);                
         }    
         
         // Handle the Response

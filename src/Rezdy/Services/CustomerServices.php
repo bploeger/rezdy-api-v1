@@ -22,17 +22,17 @@ use GuzzleHttp\Psr7;
  */
 class CustomerServices extends BaseService {
 
-	public function create(Customer $customer) {
+	public function create(Customer $request) {
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.customer_create');
             
         // Verify the customer request has the minimum information required prior to submission.
-        if ( !$customer->isValid() ) return $customer;
+        if ( !$request->isValid() ) return $request;
 
         // try to Send the request
         try {                   
-            $response = parent::sendRequestWithBody('POST', $baseUrl, $customer);
+            $response = parent::sendRequestWithBody('POST', $baseUrl, $request);
         } catch (TransferException $e) {            
-            return $this->returnExceptionAsErrors($customer, $e);         
+            return $this->returnExceptionAsErrors($e, $request);         
         }    
         
         // Handle the Response
@@ -41,14 +41,12 @@ class CustomerServices extends BaseService {
 
     public function find($customerID) {
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.customer_get') . $customerID;
-
-        $request = new EmptyRequest;
                          
-        // try to Send the request
+        // Try to Send the request
         try {                   
             $response = parent::sendRequestWithOutBody('GET', $baseUrl);
         } catch (TransferException $e) {            
-            return $this->returnExceptionAsErrors($request, $e);         
+            return $this->returnExceptionAsErrors($e);         
         }    
         
         // Handle the Response
@@ -57,29 +55,27 @@ class CustomerServices extends BaseService {
 
     public function delete($customerID) {        
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.customer_delete') . $customerID;
-        
-        $request = new EmptyRequest;
    
         try {
             $response = parent::sendRequestWithoutBody('DELETE', $baseUrl);
         } catch (TransferException $e) {
-            return $this->returnExceptionAsErrors($request, $e);                
+            return $this->returnExceptionAsErrors($e);                
         }    
         
         // Handle the Response
         return new ResponseNoData('The customer was successfully deleted');
     }
 
-    public function search(SearchRequest $search) {
+    public function search(SearchRequest $request) {
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.customer_search');
         
-        // Verify the booking request has the minimum information required prior to submission.
-        if ( !$search->isValid() ) return $search;
+        // Verify the request has the minimum information required prior to submission.
+        if ( !$request->isValid() ) return $request;
 
         try {
-            $response = parent::sendRequestWithOutBody('GET', $baseUrl, $search->toArray());
+            $response = parent::sendRequestWithOutBody('GET', $baseUrl, $request->toArray());
         } catch (TransferException $e) {            
-            return $this->returnExceptionAsErrors($search, $e);      
+            return $this->returnExceptionAsErrors($request, $e);      
         }    
         
         // Handle the Response

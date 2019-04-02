@@ -45,6 +45,17 @@ class Config {
                             'manifest_check_in_status'  => 'manifest/checkinSession',
                             'manifest_remove_check_in'  => 'manifest/checkinSession',
                             'manifest_check_in_item'    => 'manifest/checkinOrderSession',
+                            'product_create'            => 'products',
+                            'product_get'               => 'products/',
+                            'product_marketplace'       => 'products/marketplace',
+                            'product_pickups'           => 'products/%s/pickups',
+                            'pickup_create'             => 'pickups', 
+                            'rate_search'               => 'rates/search',
+                            'rate_get'                  => 'rates/',
+                            'rate_product'              => 'rates/%s/products/%s',
+                            'resources_add_session'     => 'resources/%s/session/%s',
+                            'resources_sessions'        => 'resources/%s/sessions',
+                            'resources_session'         => 'resources/sessions',
                         ],
         /**
          * Setting the version of the application used in REST Calls when setting the version header
@@ -76,7 +87,12 @@ class Config {
         if (is_array($index) && count($index) && is_array($value[$current_index]) && count($value[$current_index])) {
             return self::getValue($index, $value[$current_index]);
         } else {
-            return $value[$current_index];
+            if (isset($value[$current_index])) {
+                return $value[$current_index];
+            } else {
+                return $current_index;     
+            }
+            
         }
     }
 }

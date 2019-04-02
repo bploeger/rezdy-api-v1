@@ -21,16 +21,16 @@ use GuzzleHttp\Psr7;
  */
 class CategoryServices extends BaseService {
 
-	public function search(SearchRequest $search) {
+	public function search(SearchRequest $request) {
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.category_search');
         
         // Verify the search request has the minimum information required prior to submission.
-        if ( !$search->isValid() ) return $search;
+        if ( !$request->isValid() ) return $request;
 
         try {
-            $response = parent::sendRequestWithOutBody('GET', $baseUrl, $search->toArray());
+            $response = parent::sendRequestWithOutBody('GET', $baseUrl, $request->toArray());
         } catch (TransferException $e) {            
-            return $this->returnExceptionAsErrors($search, $e);      
+            return $this->returnExceptionAsErrors($e, $request);      
         }    
         
         // Handle the Response
@@ -39,14 +39,12 @@ class CategoryServices extends BaseService {
 
     public function find($categoryID) {
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.category_get') . $categoryID;
-        
-        $request = new EmptyRequest;
-
+       
         // try to Send the request
         try {                   
             $response = parent::sendRequestWithOutBody('GET', $baseUrl);
         } catch (TransferException $e) {            
-            return $this->returnExceptionAsErrors($request, $e);         
+            return $this->returnExceptionAsErrors($e);         
         }    
         
         // Handle the Response
@@ -56,8 +54,6 @@ class CategoryServices extends BaseService {
     public function list($categoryID, array $optionalSettings = array()) {        
         $baseUrl = Config::get('endpoints.base_url') . sprintf( Config::get('endpoints.category_list'), $categoryID );
         
-        $request = new EmptyRequest;
-
         foreach ($optionalSettings as $key => $value) {
             $options[][$key] = $value;
         } 
@@ -65,7 +61,7 @@ class CategoryServices extends BaseService {
         try {
             $response = parent::sendRequestWithoutBody('GET', $baseUrl, $options);
         } catch (TransferException $e) {
-            return $this->returnExceptionAsErrors($request, $e);                
+            return $this->returnExceptionAsErrors($e);                
         }    
         
         // Handle the Response
@@ -75,12 +71,10 @@ class CategoryServices extends BaseService {
     public function addProduct($categoryID, $productCode) {
         $baseUrl = Config::get('endpoints.base_url') . sprintf( Config::get('endpoints.category_add_product'), $categoryID, $productCode );
 
-        $request = new EmptyRequest;
-
         try {
             $response = parent::sendRequestWithoutBody('PUT', $baseUrl);
         } catch (TransferException $e) {
-            return $this->returnExceptionAsErrors($request, $e);                
+            return $this->returnExceptionAsErrors($e);                
         }    
         
         // Handle the Response
@@ -95,7 +89,7 @@ class CategoryServices extends BaseService {
         try {
             $response = parent::sendRequestWithoutBody('DELETE', $baseUrl);
         } catch (TransferException $e) {
-            return $this->returnExceptionAsErrors($request, $e);                
+            return $this->returnExceptionAsErrors($e);                
         }    
         
         // Handle the Response

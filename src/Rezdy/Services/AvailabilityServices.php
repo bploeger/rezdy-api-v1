@@ -30,24 +30,24 @@ class AvailabilityServices extends BaseService {
      * @throws RezdyException
      */
 
-	public function create(CreateRequest $session) {
+	public function create(CreateRequest $request) {
 		$baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.availability_create');
 		try {
-            $response = parent::sendRequestWithBody('POST', $baseUrl, $session);
+            $response = parent::sendRequestWithBody('POST', $baseUrl, $request);
         } catch (TransferException $e) {
-        	return $this->returnExceptionAsErrors($session, $e);             	
+        	return $this->returnExceptionAsErrors($e, $request);             	
         }    
         
         // Handle the Response
         return new ResponseStandard($response->getBody(), 'session');
 	}
 
-	public function update(UpdateRequest $session) {
-		$baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.availability_update') . $session->sessionId;		
+	public function update(UpdateRequest $request) {
+		$baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.availability_update') . $request->sessionId;		
 		try {
-            $response = parent::sendRequestWithBody('PUT', $baseUrl, $session);
+            $response = parent::sendRequestWithBody('PUT', $baseUrl, $request);
         } catch (TransferException $e) {
-        	return $this->returnExceptionAsErrors($session, $e);           	
+        	return $this->returnExceptionAsErrors($e, $request);           	
         }    
         
         // Handle the Response
@@ -61,20 +61,19 @@ class AvailabilityServices extends BaseService {
 		try {
             $response = parent::sendRequestWithoutBody('DELETE', $baseUrl);
         } catch (TransferException $e) {
-        	return $this->returnExceptionAsErrors($session, $e);            	
+        	return $this->returnExceptionAsErrors($e);            	
         }    
         
         // Handle the Response
         return new ResponseNoData('The session was successfully deleted');
 	}
 
-    public function search(SearchRequest $search) {
+    public function search(SearchRequest $request) {
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.availability_search');
         try {
-            $response = parent::sendRequestWithOutBody('GET', $baseUrl, $search->toArray());
+            $response = parent::sendRequestWithOutBody('GET', $baseUrl, $request->toArray());
         } catch (TransferException $e) {
-            dd($e);
-            return $this->returnExceptionAsErrors($search, $e);      
+            return $this->returnExceptionAsErrors($e, $request);      
         }    
         
         // Handle the Response

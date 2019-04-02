@@ -7,6 +7,7 @@ use Rezdy\Requests\EmptyRequest;
 use Rezdy\Requests\PickupList;
 
 use Rezdy\Responses\ResponseStandard;
+use Rezdy\Responses\ResponseList;
 use Rezdy\Responses\ResponseNoData;
 
 use GuzzleHttp\Exception\TransferException;
@@ -20,128 +21,90 @@ use GuzzleHttp\Psr7;
  */
 class PickupListServices extends BaseService {
 
-	public function create(PickupList $pickupList) {
-
-    }
-
-    public function update(PickupList $pickupList) {
-        
-    }
-
-    public function find(PickupList $pickupList) {
-        
-    }
-
-    public function search(PickupList $pickupList) {
-        
-    }
-
-    public function delete(PickupList $pickupList) {
-        
-    }
-
-
-
-
-    public function checkInSession(Manifest $manifest) {
-        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.manifest_check_in_session');
+	public function create(PickupList $request) {
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.pickup_create');
             
-        // Verify the extra request has the minimum information required prior to submission.
-        if ( !$manifest->isValid() ) return $manifest;     
+        // Verify the product request has the minimum information required prior to submission.
+        if ( !$request->isValid() ) return $request;
 
         // try to Send the request
-        try {  
-            $response = parent::sendRequestWithoutBody('PUT', $baseUrl, $manifest->toArray());              
-        } catch (TransferException $e) { 
-            return $this->returnExceptionAsErrors($manifest, $e);         
+        try {                   
+            $response = parent::sendRequestWithBody('POST', $baseUrl, $request);
+        } catch (TransferException $e) {            
+            return $this->returnExceptionAsErrors($e, $request);         
         }    
         
         // Handle the Response
-        return new ResponseNoData('Everyone in the Session has had their Check-in status updated');
+        return new ResponseStandard($response->getBody(), 'pickupList');
     }
 
-    public function findSessionCheckIn(Manifest $manifest) {
-        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.manifest_check_in_status');
+    public function update(int $pickuplistId, PickupList $request) {
+        
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.pickup_create') . '/' . $pickuplistID;
             
-        // Verify the extra request has the minimum information required prior to submission.
-        if ( !$manifest->isValid() ) return $manifest;     
+        // Verify the product request has the minimum information required prior to submission.
+        if ( !$request->isValid() ) return $request;
 
         // try to Send the request
-        try {  
-            $response = parent::sendRequestWithoutBody('GET', $baseUrl, $manifest->toArray());              
-        } catch (TransferException $e) { 
-            return $this->returnExceptionAsErrors($manifest, $e);         
+        try {                   
+            $response = parent::sendRequestWithBody('PUT', $baseUrl, $request);
+        } catch (TransferException $e) {            
+            return $this->returnExceptionAsErrors($e, $request);         
         }    
         
         // Handle the Response
-        return new ResponseStandard($response->getBody(), 'checkin');
+        return new ResponseStandard($response->getBody(), 'pickupList');
     }
 
-    public function removeSessionCheckIn(Manifest $manifest) {
-        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.manifest_remove_check_in');
+    public function find(int $pickuplistId) {
+        
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.pickup_create') . '/' . $pickuplistId;
             
-        // Verify the extra request has the minimum information required prior to submission.
-        if ( !$manifest->isValid() ) return $manifest;     
-
         // try to Send the request
-        try {  
-            $response = parent::sendRequestWithoutBody('DELETE', $baseUrl, $manifest->toArray());              
-        } catch (TransferException $e) { 
-            return $this->returnExceptionAsErrors($manifest, $e);         
+        try {                   
+            $response = parent::sendRequestWithoutBody('GET', $baseUrl);
+        } catch (TransferException $e) {            
+            return $this->returnExceptionAsErrors($e, $request);         
         }    
         
         // Handle the Response
-        return new ResponseNoData('Everyone in the Session has had their Check-in status updated');
+        return new ResponseStandard($response->getBody(), 'pickupList');
     }
 
-    public function checkInOrderItem(Manifest $manifest) {
-        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.manifest_check_in_item');
+    public function search(string ...$search) {
+        
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.pickup_create');
 
-        // Verify the extra request has the minimum information required prior to submission.
-        if ( !$manifest->isValid() ) return $manifest;     
-
-        // try to Send the request
-        try {  
-            $response = parent::sendRequestWithoutBody('PUT', $baseUrl, $manifest->toArray());              
-        } catch (TransferException $e) { 
-            return $this->returnExceptionAsErrors($manifest, $e);         
-        }  
-
-        // Handle the Response
-        return new ResponseNoData('The Item has been checked');  
-    }
-
-    public function getOrderItemCheckIn(Manifest $manifest) {
-        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.manifest_check_in_item');
-
-        // Verify the extra request has the minimum information required prior to submission.
-        if ( !$manifest->isValid() ) return $manifest;     
-
-        // try to Send the request
-        try {  
-            $response = parent::sendRequestWithoutBody('GET', $baseUrl, $manifest->toArray());              
-        } catch (TransferException $e) { 
-            return $this->returnExceptionAsErrors($manifest, $e);         
+        if (count($search)) {
+            $request = ['searchString' =>   $search[0]];
+        } else {
+            $request = [];
         }
 
+        // try to Send the request
+        try {                   
+            $response = parent::sendRequestWithoutBody('GET', $baseUrl, $request);
+        } catch (TransferException $e) {            
+            return $this->returnExceptionAsErrors($e, $request);         
+        }    
+
         // Handle the Response
-        return new ResponseStandard($response->getBody(), 'checkin');    
+        return new ResponseList($response->getBody(), 'pickupListList');
     }
 
-    public function removeOrderItemCheckIn(Manifest $manifest) {
-        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.manifest_check_in_item');
+    public function delete(int $pickupListId) {
+        
+         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.pickup_create') . '/' . $pickupListId;
 
-        // Verify the extra request has the minimum information required prior to submission.
-        if ( !$manifest->isValid() ) return $manifest;     
-
-        // try to Send the request
-        try {  
-            $response = parent::sendRequestWithoutBody('DELETE', $baseUrl, $manifest->toArray());              
-        } catch (TransferException $e) { 
-            return $this->returnExceptionAsErrors($manifest, $e);         
-        }
-
+         // try to Send the request
+        try {                   
+            $response = parent::sendRequestWithoutBody('DELETE', $baseUrl);
+        } catch (TransferException $e) {            
+            return $this->returnExceptionAsErrors($e);         
+        }    
+        
         // Handle the Response
-        return new ResponseNoData('The items check-in status has been cleared');  
+        return new ResponseNoData('The pickup list has been deleted');
+
     }
 }
