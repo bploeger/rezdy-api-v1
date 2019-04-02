@@ -1,7 +1,7 @@
 {
   "name": "bploeger/rezdy-api-v1",
   "type": "library",
-  "description": "PACKAGE UNDER DEVELOPMENT A PHP wrapper for The Rezdy Booking API Ver. 1",
+  "description": "A PHP wrapper for The Rezdy Booking API Ver. 1",
   "keywords": [
     "Rezdy"
   ],
