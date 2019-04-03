@@ -50,9 +50,9 @@ class CategoryServices extends BaseService {
      * @return ResponseStandard object
      * @throws EmptyRequest request object with errors     
      */
-    public function get(int $categoryID) {
+    public function get(int $categoryId) {
         // Build the request URL
-        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.category_get') . $categoryID;
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.category_get') . $categoryId;
         try {   
             // Try to send the request                
             $response = parent::sendRequestWithOutBody('GET', $baseUrl);
@@ -67,7 +67,7 @@ class CategoryServices extends BaseService {
      * Load all products within a category. 
      *
      * @param int $categoryId
-     * @param array $optionalSettings an array of the query parameters 
+     * @param array|optional $optionalSettings an array of the query parameters 
      * @return ResponseList object
      * @throws EmptyRequest request object with errors    
      */

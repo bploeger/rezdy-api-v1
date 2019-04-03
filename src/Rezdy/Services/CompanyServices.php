@@ -21,7 +21,7 @@ class CompanyServices extends BaseService {
      * @return ResponseStandard object
      * @throws EmptyRequest request object with errors     
      */
-	public function find(string $companyAlias) {
+	public function get(string $companyAlias) {
         // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . sprintf( Config::get('endpoints.company_get'), $companyAlias );
         try {                   

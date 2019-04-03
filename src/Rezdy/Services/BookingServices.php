@@ -23,6 +23,7 @@ use GuzzleHttp\Psr7;
 class BookingServices extends BaseService {
     /**
      * Create a new booking.
+     *
      * @param Booking $request object 
      * @return ResponseStandard object
      * @throws Booking request object with errors     
@@ -63,8 +64,10 @@ class BookingServices extends BaseService {
     }
     /**
      * Updates an existing booking by Order Number
+     * 
      * NOTE: This is not a partial update, a full booking object, as it was retrieved from the booking create or 
      * search services, has to be send back to the request payload.
+     *
      * @param string $orderNumber
      * @param Booking $request object 
      * @return ResponseStandard object
@@ -87,7 +90,9 @@ class BookingServices extends BaseService {
     }
     /**
      * Cancels an existing booking and send notifications about the cancellation. 
+     *
      * NOTE: In case of an Automated Payment booking, will also refund payment.
+     *
      * @param string $orderNumber
      * @param array $optionalSettings an array of the query parameters 
      * @return ResponseNoData object
@@ -112,6 +117,7 @@ class BookingServices extends BaseService {
     }
     /**
      * Search bookings in the account 
+     *
      * @param BookingSearch $request object
      * @return ResponseList object
      * @throws BookingSearch request object with errors    
@@ -133,10 +139,12 @@ class BookingServices extends BaseService {
     }
     /**
      * Get a quote for a booking.
+     *
      * NOTE: Use this service to validate your Booking object before making the actual booking.
      * Business rules will be validated, and all amounts and totals will be populated.  It is 
      * not a Booking: It does not have any status or booking number. A Quote does not reserve 
-     * any seat. 
+     * any seats. 
+     *
      * @param Booking $request object
      * @return ResponseStandard object
      * @throws Booking request object with errors    

@@ -23,9 +23,9 @@ If you are unable to install using composer, we have provided a zip file that in
 
 ## Documentation
 
-The source documentation is hosted at http://bploeger.github.io/php-sdk
+The source documentation is hosted at https://github.com/bploeger/rezdy-api-v1/wiki
 
-API Documentation is located at https://developers.rezdy.com/rezdy-api/reference
+API Documentation provided by Rezdy is located at https://developers.rezdy.com/rezdy-api/reference
 
 ## Usage
 The RezdyAPI class contains the underlying services that hold the methods that use the API.
