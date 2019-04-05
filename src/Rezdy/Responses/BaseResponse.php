@@ -30,12 +30,23 @@ abstract class BaseResponse {
 		$this->error[] = $error;
 	}
 
+    public function viewErrors() {
+        if(is_set($this->error)) {
+            return json_encode($this->error);
+        } else {
+            return '';
+        }
+    }
+
+    public function toJSON() {
+        return json_encode($this);
+    }
+
 	public function wasSuccessful() {
 		return ( !isset($this->hadError) );
 	}
 
 	public function __toString() {
 		return json_encode($this);
-	}
-	
+	}	
 }

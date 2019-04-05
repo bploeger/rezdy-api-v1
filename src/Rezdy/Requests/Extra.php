@@ -21,7 +21,7 @@ class Extra extends BaseRequest implements RequestInterface {
 								];
 
 		// Sets the class mapping for single set items to the request 
-		$this->setClassMap = 	[ 	'Rezdy\Resources\Object\ItemExtraImage'	=> 'image'
+		$this->setClassMap = 	[ 	'Rezdy\Resources\Objects\ExtraImage'	=> 'image'
 								];
 
 		if (is_array($params)) {

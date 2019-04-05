@@ -19,12 +19,14 @@ use GuzzleHttp\Psr7;
  */
 class ManifestServices extends BaseService {
     /**
-     * Store Check-in / No show flag for everyone in a specified session. 
+     * Store Check-in / No show flag for everyone in a specified session.
+     * 
      * NOTE: The session is identified by product code and start time (or start time local).  Only 
      * available for the supplier API.
-     * @param Manifest $request object 
-     * @return ResponseNoData object
-     * @throws Manifest request object with errors     
+     *
+     * @param Rezdy\Requests\Manifest $request
+     * @return Rezdy\Responses\ResponseNoData
+     * @throws Rezdy\Requests\Manifest
      */
 	public function checkInSession(Manifest $request) {
         // Build the request URL
@@ -43,11 +45,13 @@ class ManifestServices extends BaseService {
     }
     /**
      * Retrieves the Check-in status. Checks if everyone in the whole session was checked in. 
+     *
      * NOTE: The session is identified by product code and start time (or start time local).  Only 
      * available for the supplier API.
-     * @param Manifest $request object 
-     * @return ResponseStandard object
-     * @throws Manifest request object with errors     
+     *
+     * @param Rezdy\Requests\Manifest $request
+     * @return Rezdy\Responses\ResponseStandard 
+     * @throws Rezdy\Requests\Manifest   
      */
     public function getSessionCheckIn(Manifest $request) {
         // Build the request URL
@@ -66,11 +70,13 @@ class ManifestServices extends BaseService {
     }
     /**
      * Remove Check-in / No show flag from everyone in the whole session.
+     *
      * NOTE: The session is identified by product code and start time (or start time local).  Only 
      * available for the supplier API.
-     * @param Manifest $request object 
-     * @return ResponseNoData object
-     * @throws Manifest request object with errors     
+     *
+     * @param Rezdy\Requests\Manifest $request
+     * @return Rezdy\Responses\ResponseNoData
+     * @throws Rezdy\Requests\Manifest 
      */
     public function removeSessionCheckIn(Manifest $request) {
         // Build the request URL
@@ -89,11 +95,13 @@ class ManifestServices extends BaseService {
     }
     /**
      * Place Check-in a / No show flag for the specified order item.
+     *
      * NOTE: The order item is identified by order number, product code and start time (or start time local).
      * Only available for the supplier API.
-     * @param Manifest $request object 
-     * @return ResponseNoData object
-     * @throws Manifest request object with errors     
+     *
+     * @param Rezdy\Requests\Manifest $request
+     * @return Rezdy\Responses\ResponseNoData
+     * @throws Rezdy\Requests\Manifest    
      */
     public function checkInOrderItem(Manifest $request) {
         // Build the request URL
@@ -112,11 +120,13 @@ class ManifestServices extends BaseService {
     }
     /**
      * Retrieves the Check-in status. Checks if everyone in the whole session was checked in.
+     *
      * NOTE: Retrieves the Check-in status. Checks if everyone in the whole session was checked in.  Only 
      * available for the supplier API.
-     * @param Manifest $request object 
-     * @return ResponseStandard object
-     * @throws Manifest request object with errors     
+     *
+     * @param Rezdy\Requests\Manifest $request
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\Manifest    
      */
     public function getOrderItemCheckIn(Manifest $manifest) {
         // Build the request URL
@@ -135,9 +145,10 @@ class ManifestServices extends BaseService {
     }
     /**
      * Remove order item check-in. 
-     * @param Manifest $request object 
-     * @return ResponseNoData object
-     * @throws Manifest request object with errors     
+     *
+     * @param Rezdy\Requests\Manifest $request
+     * @return Rezdy\Responses\ResponseNoData
+     * @throws Rezdy\Requests\Manifest     
      */
     public function removeOrderItemCheckIn(Manifest $request) {
         // Build the request URL

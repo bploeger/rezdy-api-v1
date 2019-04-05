@@ -1,6 +1,7 @@
 <?php
 namespace Rezdy\Responses;
 
+use Rezdy\Requests\EmptyRequest;
 
 /**
  * Handles and Processes the Standard Response from the API
@@ -26,4 +27,21 @@ class ResponseStandard extends BaseResponse {
 		}
 	}
 
+	public function toRequest() {
+		$typeToClass = 	[	'booking'		=> 'Rezdy\Requests\Booking',
+							'session'		=> 'Rezdy\Requests\SessionUpdate',
+							'customer'		=> 'Rezdy\Requests\Customer',
+							'extra'			=> 'Rezdy\Requests\Extra',
+							'pickupList'	=> 'Rezdy\Requests\PickupList',
+							'product'		=> 'Rezdy\Requests\Product',
+						];
+		$itemType = $this->itemType;
+		if (array_key_exists($itemType, $typeToClass)) {
+			$request = new $typeToClass[$itemType];
+			$request->assemble($this->$itemType);
+		} else {
+			$request = new EmptyRequest;
+		}		
+		return $request;
+	}
 }

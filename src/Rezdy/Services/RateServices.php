@@ -25,8 +25,8 @@ class RateServices extends BaseService {
      * NOTE: If rateName and productCode are not specified, then it will return all rates belonging to the supplier
      *    
      * @param array|optional $queryParams  
-     * @return ResponseList object
-     * @throws EmptyRequest request object with errors     
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\EmptyRequest   
      */
     public function search(array ...$queryParams) {        
         // Build the request URL
@@ -47,8 +47,8 @@ class RateServices extends BaseService {
      * Retrieves a rate based on its ID
      *
      * @param int $rateId  
-     * @return ResponseStandard object
-     * @throws EmptyRequest request object with errors     
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\EmptyRequest    
      */
     public function get(int $rateId) {
         // Build the request URL
@@ -64,13 +64,13 @@ class RateServices extends BaseService {
         return new ResponseStandard($response->getBody(), 'rate');
     }
     /**
-     * Adds a product to the specfied rate
+     * Adds a product to the specified  rate
      *
      * @param int $rateId  
      * @param string $productCode
-     * @param ProductRate $request object  
-     * @return ResponseStandard object
-     * @throws ProductRate request object with errors     
+     * @param Rezdy\Requests\ProductRate $request
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\ProductRate     
      */
     public function addProduct(int $rateId, string $productCode, ProductRate $request) {
         // Build the request URL
@@ -94,8 +94,8 @@ class RateServices extends BaseService {
      *
      * @param int $rateId  
      * @param string $productCode
-     * @return ResponseNoData object
-     * @throws EmptyRequest request object with errors     
+     * @return Rezdy\Responses\ResponseNoData
+     * @throws Rezdy\Requests\EmptyRequest   
      */
     public function removeProduct(int $rateId, string $productCode) {
         // Build the request URL

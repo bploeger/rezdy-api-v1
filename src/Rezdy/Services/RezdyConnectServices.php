@@ -16,12 +16,12 @@ use GuzzleHttp\Psr7;
  */
 class RezdyConnectServices extends BaseService {
 	/**
-     * Configure a product for RezdyConnect, or update a product Rezdy connect settings.
+     * Configure a product for RezdyConnect, or update a product RezdyConnect settings.
      *       
      * @param string $productCode
      * @param boolean|optional $skipEndpointsValidation  
-     * @return ResponseStandard object
-     * @throws EmptyRequest request object with errors     
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\EmptyRequest   
      */
 	public function update(string $productCode, bool $skipEndpointsValidation = false) {
 		// Build the request URL
@@ -39,11 +39,11 @@ class RezdyConnectServices extends BaseService {
         return new ResponseStandard($response->getBody(), 'rezdyConnectSettings');
 	}
 	/**
-     * Load an existing product RezdyConnect settings.
+     * Load an existing product's RezdyConnect settings.
      *       
      * @param string $productCode
-     * @return ResponseStandard object
-     * @throws EmptyRequest request object with errors     
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\EmptyRequest  
      */
 	public function get(string $productCode) {
 		// Build the request URL
@@ -62,8 +62,8 @@ class RezdyConnectServices extends BaseService {
      * Deconfigure a product from RezdyConnect.
      *       
      * @param string $productCode
-     * @return ResponseStandard object
-     * @throws EmptyRequest request object with errors     
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\EmptyRequest  
      */
 	public function remove(string $productCode) {
 		// Build the request URL

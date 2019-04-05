@@ -19,13 +19,12 @@ class SessionCreate extends BaseRequest implements RequestInterface {
 		$this->optionalParams = [	'allDay' 		=> 'boolean', 
 									'endTime'		=> 'ISO8601',
 									'endTimeLocal'	=> 'date-time',
-									'priceOptions'	=> 'priceOptionArray',
 									'startTime'		=> 'ISO8601',
 									'startTimeLocal'=> 'date-time' 
 								];		
 
 		//Sets the class mapping for multiple item sets to the request 				
-		$this->addClassMap  =	[	'Rezdy\Resources\Availability\PriceOption'		=> 'priceOptions'
+		$this->addClassMap  =	[	'Rezdy\Request\Objects\PriceOption'		=> 'priceOptions'
 								];	
 
 		if (is_array($params)) {

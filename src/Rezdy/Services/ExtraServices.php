@@ -22,14 +22,14 @@ class ExtraServices extends BaseService {
     /**
      * Creates a new extra
      *
-     * @param Extra request object
-     * @return ResponseStandard object
-     * @throws Extra request object with errors    
+     * @param Rezdy\Requests\Extra $request
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\Extra
      */
 	public function create(Extra $request) {
         // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.extra_create');
-        // Verify the Extra request object.
+        // Verify the request
         if ( !$request->isValid() ) return $request;        
         try {       
             // Try to send the request           
@@ -45,10 +45,10 @@ class ExtraServices extends BaseService {
      * Retrieves an extra by Id
      *
      * @param int $extraId
-     * @return ResponseStandard object
-     * @throws Extra request object with errors    
+     * @return Rezdy\Responses\ResponseStandard 
+     * @throws Rezdy\Requests\EmptyRequest
      */
-    public function retrieve(int $extraId) {
+    public function get(int $extraId) {
         // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.extra_get') . $extraId;
         try {
@@ -68,9 +68,9 @@ class ExtraServices extends BaseService {
      * the Order and Product consistency.
      *
      * @param int $extraId
-     * @param Extra request object
-     * @return ResponseStandard object
-     * @throws Extra request object with errors    
+     * @param Rezdy\Requests\Extra
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\Extra
      */
     public function update(int $extraID, Extra $request) {
         // Build the request URL
@@ -90,12 +90,9 @@ class ExtraServices extends BaseService {
     /**
      * Deletes an extra
      *
-     * NOTE: The extra ID can change when updating it, since there are business rules to protect 
-     * the Order and Product consistency.
-     *
      * @param int $extraId
-     * @return ResponseNoData object
-     * @throws EmptyRequest object with errors    
+     * @return Rezdy\Responses\ResponseNoData
+     * @throws Rezdy\Requests\EmptyRequest   
      */
     public function delete(int $extraId) {        
         // Build the request URL
@@ -111,19 +108,24 @@ class ExtraServices extends BaseService {
         return new ResponseNoData('The extra was successfully deleted');
     }
     /**
-     * Searches for extra name
+     * Searches for extras by name
      *
      * NOTE: To retrieve all extras, omit the searchString parameter
      *
      * @param string|optional $searchString
-     * @return ResponseList object
-     * @throws EmptyRequest object with errors    
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\EmptyRequest    
      */
-    public function search(string $searchString = '') {        
+    public function search(string $searchString = null) {        
         // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.extra_search');
-        // Build the Search String Array
-        $search['searchString'] = $searchString;          
+        
+        if ($searchString != null) {
+            // Build the Search String Array
+            $search['searchString'] = $searchString;    
+        } else {
+            $search = [];
+        }   
         try {
             // Try to send the request 
             $response = parent::sendRequestWithoutBody('GET', $baseUrl, $search);

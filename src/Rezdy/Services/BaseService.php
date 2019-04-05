@@ -38,6 +38,7 @@ abstract class BaseService {
         $this->apiKey = $apiKey;
         $this->client = $client ?: new Client();
     }
+
     /**
      * Get the rest client being used by the service
      * @return Client - GuzzleHTTP Client implementation being used
@@ -72,7 +73,7 @@ abstract class BaseService {
      * @param array $queryParams - An array holding the query params as key => value
      * @return Response - GuzzleHTTP Response Object
      */
-    protected function sendRequestWithBody(string $method, string $baseUrl, string $body = null, array $queryParams = array()) {
+    protected function sendRequestWithBody(string $method, string $baseUrl, $body = null, array $queryParams = array()) {
         // Insert the API Key to the query array
         $queryParams["apiKey"] = $this->apiKey;
         // Create the GuzzleHTTP Request
@@ -107,10 +108,8 @@ abstract class BaseService {
     /**
      * Parses exceptions and adds them to the request for error handling
      * @param TransferException $e - The exception encountered by the client
-     * @param string $baseUrl - The full URL for the request
-     * @param string|null $body - The JSON payload to include in the request body
-     * @param array $queryParams - An array holding the query params as key => value
-     * @return Request - Return the Request submitted with errors
+     * @param string|null $request - The request submitted
+     * @return Request - Return the request submitted with errors
      */
     protected function returnExceptionAsErrors(TransferException $e, $request = null) {  
         // See if a request was passed, if a request was not passed create an empty request.

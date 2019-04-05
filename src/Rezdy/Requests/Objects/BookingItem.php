@@ -34,7 +34,7 @@ class BookingItem extends BaseRequest {
 									]; 
 
 			//Sets the class mapping for multiple item sets to the request 				
-			$this->addClassMap  =	[	'Rezdy\Requests\Objects\BookingExtra'		=> 'extras',
+			$this->addClassMap  =	[	'Rezdy\Requests\Extra'						=> 'extras',
 										'Rezdy\Requests\Objects\BookingItemQuantity'=> 'quantities'
 									];	
 

@@ -25,9 +25,9 @@ class ProductServices extends BaseService {
     /**
      * Creates a new product
      *    
-     * @param Product $request object 
-     * @return ResponseStandard object
-     * @throws Product request object with errors     
+     * @param Rezdy\Requests\Product $request
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\Product  
      */
 	public function create(Product $request) {
 		// Build the request URL
@@ -48,8 +48,8 @@ class ProductServices extends BaseService {
      * Load an existing product by Product Code
      *    
      * @param string $productCode 
-     * @return ResponseStandard object
-     * @throws Product request object with errors     
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\EmptyRequest   
      */
     public function get(string $productCode) {
 		// Build the request URL
@@ -68,9 +68,9 @@ class ProductServices extends BaseService {
      * Updates a product.
      *       
      * @param string $productCode 
-     * @param ProductUpdate $request object 
-     * @return ResponseStandard object
-     * @throws ProductUpdate request object with errors     
+     * @param Rezdy\Requests\ProductUpdate $request
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\ProductUpdate 
      */
     public function update(string $productCode, ProductUpdate $request) {
         // Build the request URL
@@ -89,8 +89,8 @@ class ProductServices extends BaseService {
      * Deletes a product.
      *       
      * @param string $productCode 
-     * @return ResponseNoData object
-     * @throws EmptyRequest request object with errors     
+     * @return Rezdy\Responses\ResponseNoData
+     * @throws Rezdy\Requests\EmptyRequest   
      */
     public function delete(string $productCode) {
         // Build the request URL
@@ -112,9 +112,9 @@ class ProductServices extends BaseService {
      * when acting as a supplier, to load your own products. If you're acting as an agent, use the 
      * searchMarketplace function
      *   
-     * @param SimpleSearch $request object 
-     * @return ResponseList object
-     * @throws SimpleSearch request object with errors     
+     * @param Rezdy\Requests\SimpleSearch $request 
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\SimpleSearch  
      */
     public function search(SimpleSearch $request) {
         // Build the request URL
@@ -135,9 +135,9 @@ class ProductServices extends BaseService {
      * NOTE:  Use this service when acting as an agent, to find products that are available for 
      * you to book.
      *   
-     * @param MarketplaceSearch $request object 
-     * @return ResponseList object
-     * @throws SimpleSearch request object with errors     
+     * @param Rezdy\Requests\MarketplaceSearch $request object 
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\SimpleSearch  
      */
     public function searchMarketplace(MarketplaceSearch $request) {
         // Build the request URL
@@ -158,9 +158,9 @@ class ProductServices extends BaseService {
      * Gets a list of pickup locations configured for this product.
      *    
      * @param string $productCode   
-     * @param SimpleSearch $request object 
-     * @return ResponseList object
-     * @throws SimpleSearch request object with errors     
+     * @param Rezdy\Requests\SimpleSearch|optional $request
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\SimpleSearch    
      */
     public function getPickups(string $productCode, SimpleSearch ...$request) {
         // Build the request URL

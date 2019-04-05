@@ -11,7 +11,7 @@ class SessionUpdate extends BaseRequest implements RequestInterface {
 
 	public $sessionId; 
 
-	public function __construct( $params = '') {		
+	public function __construct($params = '') {		
 		//Set the required properties of the object and the required datatype
 		$this->requiredParams = [   'sessionId'			=> 'integer'
 								];		

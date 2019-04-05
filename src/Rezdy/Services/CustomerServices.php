@@ -22,17 +22,18 @@ use GuzzleHttp\Psr7;
 class CustomerServices extends BaseService {
     /**
      * Create a new customer      
-     * @param Customer $request object 
-     * @return ResponseStandard object
-     * @throws Customer request object with errors     
+     *
+     * @param Rezdy\Requests\Customer $request
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\Customer     
      */
 	public function create(Customer $request) {
         // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.customer_create');            
-        // Verify the Customer object.
+        // Verify the request.
         if ( !$request->isValid() ) return $request;
         try { 
-            // Try to Send the request                  
+            // Try to Send the request              
             $response = parent::sendRequestWithBody('POST', $baseUrl, $request);
         } catch (TransferException $e) {
             // Handle Transfer Exceptions            
@@ -43,9 +44,10 @@ class CustomerServices extends BaseService {
     }
     /**
      * Load an existing customer by Id   
+     *
      * @param int $customerId 
-     * @return ResponseStandard object
-     * @throws Customer request object with errors     
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\EmptyRequest
      */
     public function get(int $customerID) {
         // Build the Request URL
@@ -61,10 +63,11 @@ class CustomerServices extends BaseService {
         return new ResponseStandard($response->getBody(), 'customer');
     }
     /**
-     * Delete a customer 
+     * Delete a customer
+     *
      * @param string $customerId 
-     * @return ResponseNoData object
-     * @throws Customer request object with errors     
+     * @return Rezdy\Responses\ResponseNoData
+     * @throws Rezdy\Requests\EmptyRequest  
      */
     public function delete(string $customerId) {        
         // Build the Request URL
@@ -81,9 +84,10 @@ class CustomerServices extends BaseService {
     }
     /**
      * Search customers in the account
-     * @param SimpleSeach object
-     * @return ResponseList object
-     * @throws SimpleSearch object with errors     
+     *
+     * @param Rezdy\Requests\SimpleSeach $request
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\SimpleSearch
      */
     public function search(SimpleSearch $request) {
         // Build the Request URL
