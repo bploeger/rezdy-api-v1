@@ -3,7 +3,7 @@ namespace Rezdy\Requests;
 
 use Carbon\Carbon;
 
-use Util\Validate;
+use Rezdy\Util\Validate;
 
 use Rezdy\Exceptions\RezdyException;
 
@@ -123,6 +123,16 @@ abstract class BaseRequest {
         return false;
     }
 
+    protected function createMappingArray() {
+        //Create a Mapping Array of Attachable Items        
+        $mapping = array();
+        $merged_array = array_merge($this->setClassMap , $this->addClassMap);         
+        foreach ($merged_array as $class => $param) {
+            $mapping[$param] = $class;
+        }
+        return $mapping;
+    } 
+ 
     /**
      * Get the requested value from an array, or return the default
      *
@@ -157,7 +167,35 @@ abstract class BaseRequest {
         }  
     }   
 
-    // Verify the Resource Params
+    public function assemble($response) {        
+        // Pull the Class Mapping Array
+        $mapping = $this->createMappingArray();
+        // Parse the Response
+        foreach($response as $key => $data) {                    
+            // Check if the Data is an array or object
+            if (is_array($data) || is_object($data)) {
+                // See if the mapping array has an entry
+                if (array_key_exists($key, $mapping)) {
+                    //Create the new class instance
+                    $subItem = new $mapping[$key];
+                    if(is_object($data)) {
+                        // Assemble class instance from an object
+                        $subItem->assemble( (array) $data);
+                        $this->attach($subItem);                        
+                    } elseif (is_array($data) && isset($data[0])) {
+                        // Assemble class instance from an array
+                        $subItem->assemble($data[0]); 
+                        $this->attach($subItem);                                                          
+                    } 
+                }
+            } else {
+                // Set the Value
+                $this->setValue($key, $data);
+            }            
+        }
+    }
+
+    // Verifies the Resource Params
     protected function verifyParams() {  
         // Verify the Required Params and their type
         foreach ($this->requiredParams as $param => $type) {            
@@ -175,31 +213,38 @@ abstract class BaseRequest {
                 $this->checkType($param, $type);
             }                   
         }
+
+        // Clean Up the Request
+        $allowed = array_merge($this->requiredParams, $this->optionalParams, $this->createMappingArray());
+        foreach ($this as $key => $value) {            
+            if (!array_key_exists($key, $allowed)) {
+                unset($this->$key);
+            }
+        }                 
     }
 
     protected function checkType($param, $type) {
+        // Handle ranges
         $explode = explode('|', $type);
         $lookup = $explode[0];
+        
+        if (isset($explode[1]) && isset($explode[2])) {
+            $range = array( (int) $explode[1], (int) $explode[2]);
+        } else {
+            $range = null;
+        }
+        
         if (isset($this->$param)) {          
             // Parse the type required
             switch ($lookup) {                
                 // Verify the data is a string
                 case 'string':
-                    if(!is_string($this->$param)) { 
-                        $this->setError($param . ' is not a string');
-                    }
-                    if (isset($explode[1])) {
-                        $range = explode('-', $explode[1]);
-                        
-                        if (strlen ($this->$param) < $range[0] || strlen ($this->$param) > $range[1]) {
-                            $this->setError($param . ' must contain between ' . $range[0] . ' and ' . $range[1] . 'characters');
-                        }                       
-                    }
+                    Validate::string($this, $param, $range);                    
                     break; 
                 // Verify the data is a string or an array of strings
                 case 'string-or-array':
                     if( is_string($this->$param) ) {                        
-                        // Is a STRING and PASSES                    
+                        Validate::string($this, $param, $range);                    
                     } elseif( is_array($this->$param) ) {
                         // Is an ARRAY, verify the array contents
                         foreach ($this->$param as $item) {
@@ -265,33 +310,14 @@ abstract class BaseRequest {
                     }
                     break;  
                 // Verify the data is boolean
-                case 'boolean':              
-                    // Verify it is a boolean
-                    if(!is_bool($this->$param)) {                         
-                        // Try to fix the issue
-                        if (strtoupper($this->$param) === 'TRUE' || $this->$param === 1) {
-                            // Handles common errors that recasting would not handle properly
-                            $this->$param = true;
-                        } else {
-                            // Recast the value
-                            $this->$param = false; 
-                        } 
-                        // Verify the Fix Worked
-                        if(!is_bool($this->$param)) {
-                            // Set an Error
-                            $this->setError($param . ' is not a boolean');
-                        } 
-                    }
-                    // Cast Correction to string
-                    if (is_bool($this->$param)) {
-                        if ($this->$param) {
-                            // Recast the value
-                            $this->$param = 'true';
-                        } else {
-                            // Recast the value
-                            $this->param = 'false';
-                        }
-                    }
+                case 'boolean':   
+                   if (strtoupper($this->$param) === 'TRUE' || $this->$param == 1) {
+                        // Handles common errors that recasting would not handle properly
+                        $this->$param = 'true';
+                    } else {
+                        // Recast the value
+                        $this->$param = 'false'; 
+                    }   
                     break; 
                 // Verify the data is numeric
                 case 'numeric':

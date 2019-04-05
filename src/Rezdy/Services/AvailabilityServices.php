@@ -27,9 +27,9 @@ class AvailabilityServices extends BaseService {
      *
      * NOTE: Sessions can be created only for INVENTORY mode products.
      *
-     * @param SessionCreate $request object 
-     * @return ResponseStandard object
-     * @throws SessionCreate request object with errors     
+     * @param Rezdy\Requests\SessionCreate $request
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\SessionCreate
      */
 	public function create(SessionCreate $request) {
 		// Build the request URL
@@ -47,9 +47,9 @@ class AvailabilityServices extends BaseService {
     /**
      * Update availability for a specific session.
      *
-     * @param SessionUpdate $request object 
-     * @return ResponseStandard response object
-     * @throws SessionUpdate request object with errors     
+     * @param Rezdy\Requests\SessionUpdate $request
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\SessionUpdate   
      */
 	public function update(SessionUpdate $request) {
 		// Build the request URL
@@ -66,9 +66,9 @@ class AvailabilityServices extends BaseService {
 	}
     /**
      * Delete a single session.
-     * @param int $sessionID the availibility sessionID 
-     * @return ResponseStandard object
-     * @throws EmptyRequest request object with errors     
+     * @param int $sessionId
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\EmptyRequest
      */
 	public function delete(int $sessionId) {
         // Build the request URL
@@ -95,9 +95,9 @@ class AvailabilityServices extends BaseService {
      * the price options matching the chosen product code on the client side, 
      * when processing /availability service responses.
      *
-     * @param SessionSearch $request object 
-     * @return ResponseList response object
-     * @throws SessionSearch request object with errors     
+     * @param Rezdy\Requests\SessionSearch $request
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\SessionSearch   
      */
     public function search(SessionSearch $request) {
         // Build the request URL

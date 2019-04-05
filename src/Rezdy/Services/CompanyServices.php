@@ -18,8 +18,8 @@ class CompanyServices extends BaseService {
     /**
      * Load an existing Company by it's alias in Rezdy.
      * @param string $companyAlias
-     * @return ResponseStandard object
-     * @throws EmptyRequest request object with errors     
+     * @return Rezdy\Response\ResponseStandard
+     * @throws Rezdy\Requests\EmptyRequest
      */
 	public function get(string $companyAlias) {
         // Build the request URL

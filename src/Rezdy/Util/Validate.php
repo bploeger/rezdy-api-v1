@@ -10,7 +10,7 @@ namespace Rezdy\Util;
 
 class Validate {
     
-    public static enumFields() {
+    public static function enumFields() {
       	return [ 
                             'booking-modes'         =>  [   'NO_DATE','DATE_ENQUIRY','INVENTORY'                                              ],
                             
@@ -126,5 +126,22 @@ class Validate {
                             'voucher-value-type'    =>  [   'VALUE_LIMITPRODUCT','VALUE','VALUE_LIMITCATALOG','PERCENT_LIMITPRODUCT',
                                                             'PERCENT','PERCENT_LIMITCATALOG','PRODUCT'                                         ],  
         ];
-    }      
+    }    
+
+    public static function string ($object, $param, $length = null) {
+
+        if(!is_string($object->$param)) { 
+             $object->setError($param . ' is not a string');
+        }
+        
+        if ($length != null) {                               
+            if ( $this->withinRange( strlen($object->$param), $length)) {
+                $object->setError($param . ' must contain between ' . min($length) . ' and ' . max($length) . 'characters');
+            }                       
+        }
+    } 
+
+    private function withinRange(float $value, $range) {
+        return ($value >= min($range) && $value <= max($range));
+    } 
 }

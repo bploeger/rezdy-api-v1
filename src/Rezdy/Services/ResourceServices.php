@@ -26,9 +26,9 @@ class ResourceServices extends BaseService {
      *
      * NOTE: Paging using limit and offset is applied to the result list.
      *    
-     * @param SimpleSearch|optional $request object  
-     * @return ResponseList object
-     * @throws SimpleSearch request object with errors     
+     * @param Rezdy\Requests\SimpleSearch|optional $request 
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\SimpleSearch 
      */
 	public function list(SimpleSearch ...$request) {
 		// Build the request URL
@@ -51,8 +51,8 @@ class ResourceServices extends BaseService {
      * @param int $resourceId
      * @param int $sessionId
      * @param int|optional $resourceOrder  
-     * @return ResponseStandard object
-     * @throws EmptyRequest object with errors     
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\EmptyRequest  
      */
 	public function addSessionResource(int $resourceId, int $sessionId, int $resourceOrder = 0) {
 		// Build the request URL
@@ -80,9 +80,9 @@ class ResourceServices extends BaseService {
      *    
      * @param int $resourceId
      * @param int $sessionId
-     * @param ResourceSessionSearch|optional $request object   
-     * @return ResponseStandard object
-     * @throws ResourceSessionSearch object with errors     
+     * @param Rezdy\Requests\ResourceSessionSearch|optional $request
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\ResourceSessionSearch
      */
 	public function getResourceSessions(int $resourceId, ResourceSessionSearch ...$request) {
 		// Build the request URL
@@ -105,9 +105,9 @@ class ResourceServices extends BaseService {
      * NOTE: Session has to be specified either by sessionId or by product code and start time 
      * (or start time local).
      *    
-     * @param SessionResourceSearch $request object   
-     * @return ResponseList object
-     * @throws SessionResourceSearch object with errors     
+     * @param Rezdy\Requests\SessionResourceSearch $request 
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\SessionResourceSearch   
      */
 	public function getSessionResources(SessionResourceSearch $request) {
 		// Build the request URL
@@ -129,8 +129,8 @@ class ResourceServices extends BaseService {
      *    
      * @param int $resourceId
      * @param int $sessionId    
-     * @return ResponseStandard object
-     * @throws EmptyRequest object with errors     
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\EmptyRequest  
      */
 	public function removeSessionResources(int $resourceId, int $sessionId) {
 		// Build the request URL

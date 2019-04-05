@@ -24,9 +24,9 @@ class CategoryServices extends BaseService {
      * NOTE: If the search string is empty, all categories will be returned.  This will only 
      * return categories belonging to the company doing the request.
      *
-     * @param CategorySearch $request object 
-     * @return ResponseList object
-     * @throws CategorySearch request object with errors     
+     * @param Rezdy\Requests\CategorySearch $request
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\CategorySearch  
      */
 	public function search(CategorySearch $request) {
         // Build the request URL
@@ -47,8 +47,8 @@ class CategoryServices extends BaseService {
      * Load an existing category by Id
      *
      * @param int $categoryId
-     * @return ResponseStandard object
-     * @throws EmptyRequest request object with errors     
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\EmptyRequest  
      */
     public function get(int $categoryId) {
         // Build the request URL
@@ -67,9 +67,9 @@ class CategoryServices extends BaseService {
      * Load all products within a category. 
      *
      * @param int $categoryId
-     * @param array|optional $optionalSettings an array of the query parameters 
-     * @return ResponseList object
-     * @throws EmptyRequest request object with errors    
+     * @param array|optional $optionalSettings
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\EmptyRequest   
      */
     public function list(int $categoryId, array $optionalSettings = array()) {        
         // Build the request URL
@@ -93,8 +93,8 @@ class CategoryServices extends BaseService {
      *
      * @param int $categoryId
      * @param string $productCode
-     * @return ResponseList object
-     * @throws EmptyRequest request object with errors    
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\EmptyRequest
      */
     public function addProduct(int $categoryId, string $productCode) {
         // Build the request URL
@@ -114,8 +114,8 @@ class CategoryServices extends BaseService {
      *
      * @param int $categoryId
      * @param string $productCode
-     * @return ResponseList object
-     * @throws EmptyRequest request object with errors    
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\EmptyRequest
      */
     public function removeProduct(int $categoryID, string $productCode) {
         // Build the request URL

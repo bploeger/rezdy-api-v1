@@ -24,14 +24,14 @@ class BookingServices extends BaseService {
     /**
      * Create a new booking.
      *
-     * @param Booking $request object 
-     * @return ResponseStandard object
-     * @throws Booking request object with errors     
+     * @param Rezdy\Requests\Booking $request
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\Booking   
      */
 	public function create(Booking $request) {
-		// Build the request URL
+        // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.booking_create');     		
-        // Verify the Booking request object.
+        // Verify the request
         if ( !$request->isValid() ) return $request;
         try {                   
             // Try to send the request  
@@ -46,8 +46,8 @@ class BookingServices extends BaseService {
     /**
      * Load an existing booking by Order Number
      * @param string $orderNumber
-     * @return ResponseStandard object
-     * @throws EmptyRequest request object with errors     
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\EmptyRequest
      */
     public function get(string $orderNumber) {
         // Build the request URL
@@ -69,9 +69,9 @@ class BookingServices extends BaseService {
      * search services, has to be send back to the request payload.
      *
      * @param string $orderNumber
-     * @param Booking $request object 
-     * @return ResponseStandard object
-     * @throws Booking request object with errors     
+     * @param Rezdy\Requests\Booking $request
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\Booking   
      */
     public function update(string $orderNumber, Booking $request) {
         // Build the request URL
@@ -81,7 +81,7 @@ class BookingServices extends BaseService {
         try {
             // Try to send the request  
             $response = parent::sendRequestWithBody('PUT', $baseUrl, $request);
-        } catch (TransferException $e) {
+        } catch (TransferException $e) {            
             // Handle a TransferException 
             return $this->returnExceptionAsErrors($e, $request);            
         } 
@@ -94,9 +94,9 @@ class BookingServices extends BaseService {
      * NOTE: In case of an Automated Payment booking, will also refund payment.
      *
      * @param string $orderNumber
-     * @param array $optionalSettings an array of the query parameters 
-     * @return ResponseNoData object
-     * @throws EmptyRequest request object with errors    
+     * @param array $optionalSettings
+     * @return Rezdy\Responses\ResponseNoData
+     * @throws Rezdy\Requests\EmptyRequest
      */
     public function cancel(string $orderNumber, array $optionalSettings = array()) {        
         // Build the request URL
@@ -118,9 +118,9 @@ class BookingServices extends BaseService {
     /**
      * Search bookings in the account 
      *
-     * @param BookingSearch $request object
-     * @return ResponseList object
-     * @throws BookingSearch request object with errors    
+     * @param Rezdy\Requests\BookingSearch $request
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\BookingSearch   
      */
     public function search(BookingSearch $request) {
         // Build the request URL
@@ -145,14 +145,14 @@ class BookingServices extends BaseService {
      * not a Booking: It does not have any status or booking number. A Quote does not reserve 
      * any seats. 
      *
-     * @param Booking $request object
-     * @return ResponseStandard object
-     * @throws Booking request object with errors    
+     * @param Rezdy\Requests\Booking $request
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\Booking
      */
     public function quote(Booking $request) {
         // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.booking_quote');            
-        // Verify the BookingSearch request object.
+        // Verify the request.
         if ( !$request->isValid() ) return $request;
         try { 
             // Try to send the request                  

@@ -10,7 +10,6 @@
 class Booking extends BaseRequest implements RequestInterface {	
 
 	public function __construct($params = '') {
-		
 		//Set the optional properties of the object and the required datatype
 		$this->optionalParams = [	"comments"			=> "string",
     								"commission"		=> "numeric",
@@ -21,7 +20,7 @@ class Booking extends BaseRequest implements RequestInterface {
 								    "dateReconciled"	=> "date-time",
 								    "dateUpdated"		=> "date-time",
 								    "internalNotes"		=> "string",
-								    "orderNumber"		=> "string",
+								    "orderNumber"		=> "string",							    
     								"paymentOption"		=> "enum.online-payment-options",
     								"resellerAlias"		=> "string",
 								    "resellerComments"	=> "string",
@@ -55,7 +54,7 @@ class Booking extends BaseRequest implements RequestInterface {
 		$this->addClassMap  = [	'Rezdy\Requests\Objects\Field'			=> 'fields',
 								'Rezdy\Requests\Objects\BookingItem'	=> 'items',
 								'Rezdy\Requests\Objects\BookingPayment'	=> 'payments',
-								'Rezdy\Requests\Objects\BookingVoucher'	=> 'vouchers'
+								'Rezdy\Requests\Objects\Participant'	=> 'participants'
 							  ];	
 
 		if (is_array($params)) {
@@ -65,6 +64,12 @@ class Booking extends BaseRequest implements RequestInterface {
 
 	public function isValid() {
 		return ( $this->isValidBooking() && $this->isValidRequest() );
+	}
+
+	/* Is required to properly handle vouchers attached to a booking.
+	*/
+	public function addVoucher(string $voucher) {
+		$this->vouchers[] = $voucher;
 	}
 
 	/* Verifies the request has the minimum amount of information

@@ -1,15 +1,15 @@
 <?php
-namespace Rezdy\Requests\Booking;
+namespace Rezdy\Requests\Objects;
 
 use Rezdy\Requests\BaseRequest;
 
 /**
- * Creates and verifies the BookingItemExtraImage request
+ * Creates and verifies the ExtraImage request
  *
  * @package Requests
  * @author Brad Ploeger
  */
-class ItemExtraImage extends BaseRequest {
+class ExtraImage extends BaseRequest {
 
 		public function __construct($params = '') {			
 			//Set the optional properties of the object and the required type

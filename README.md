@@ -1,14 +1,12 @@
 # Rezdy API PHP SDK
-<p align="center">
 [![Latest Stable Version](https://poser.pugx.org/bploeger/rezdy-api-v1/v/stable)](https://packagist.org/packages/bploeger/rezdy-api-v1)
 [![Latest Unstable Version](https://poser.pugx.org/bploeger/rezdy-api-v1/v/unstable)](https://packagist.org/packages/bploeger/rezdy-api-v1)
 [![License](https://poser.pugx.org/bploeger/rezdy-api-v1/license)](https://packagist.org/packages/bploeger/rezdy-api-v1)
-</p>
 
 ### This library utilizes [GuzzlePHP](http://guzzle.readthedocs.org/)
 ### This library utilizes [Carbon](https://carbon.nesbot.com/)
 
-## Installing via Composer (recommended)
+## Installing via Composer
 [Composer](https://getcomposer.org/) is a dependency management tool for PHP that allows you to declare the dependencies your project needs and installs them into your project. In order to use the Rezdy API PHP SDK through composer, you must add *"bploeger/rezdy-api-v1"* as a dependency in your project's composer.json file.
 ```javascript
  {
@@ -17,9 +15,6 @@
     }
  }
 ```
-
-### Manual Installation
-If you are unable to install using composer, we have provided a zip file that includes a version of the dependencies at the time of our release, as well as our library. Unzip the vendor file in the standalone directory, and require the autoload.php file to use our methods.
 
 ## Documentation
 

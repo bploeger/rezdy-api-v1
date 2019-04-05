@@ -22,8 +22,8 @@ class VoucherServices extends BaseService {
      * Load an existing voucher by Voucher Code
      *    
      * @param string $voucherCode  
-     * @return ResponseStandard object
-     * @throws EmptyRequest request object with errors     
+     * @return Rezdy\Responses\ResponseStandard
+     * @throws Rezdy\Requests\EmptyRequest    
      */
 	public function get(string $voucherCode) {
 		// Build the request URL
@@ -41,14 +41,14 @@ class VoucherServices extends BaseService {
 	/**
      * Search vouchers in your account
      *    
-     * @param SimpleSearch|optional $request  
-     * @return ResponseList object
-     * @throws SimpleSearch request object with errors     
+     * @param Rezdy\Requests\SimpleSearch|optional $request  
+     * @return Rezdy\Responses\ResponseList
+     * @throws Rezdy\Requests\SimpleSearch  
      */
 	public function search(SimpleSearch ...$request) {
 		// Build the request URL
 		$baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.vouchers');
-		// Pluck the SimpleSearch request if passed
+		// Pluck the SimpleSearch request if multiple passed
 		$request = $this->parseOptionalArray($request, new SimpleSearch());
         try {                   
             // Try to send the request     
