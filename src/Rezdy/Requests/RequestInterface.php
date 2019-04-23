@@ -19,7 +19,7 @@ interface RequestInterface {
 	public function viewErrors();
 	
 	// Add Information Settings
-	public function set($data, $key = null);
+	public function set($data, string $key = null);
 	public function attach($data);
 	
 	// Output Formats

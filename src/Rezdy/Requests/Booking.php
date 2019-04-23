@@ -9,7 +9,8 @@
  */
 class Booking extends BaseRequest implements RequestInterface {	
 
-	public function __construct($params = '') {
+	public function __construct($params = '') {	
+
 		//Set the optional properties of the object and the required datatype
 		$this->optionalParams = [	"comments"			=> "string",
     								"commission"		=> "numeric",
@@ -20,7 +21,7 @@ class Booking extends BaseRequest implements RequestInterface {
 								    "dateReconciled"	=> "date-time",
 								    "dateUpdated"		=> "date-time",
 								    "internalNotes"		=> "string",
-								    "orderNumber"		=> "string",							    
+								    "orderNumber"		=> "string",					    
     								"paymentOption"		=> "enum.online-payment-options",
     								"resellerAlias"		=> "string",
 								    "resellerComments"	=> "string",

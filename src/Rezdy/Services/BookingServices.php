@@ -84,7 +84,7 @@ class BookingServices extends BaseService {
         } catch (TransferException $e) {            
             // Handle a TransferException 
             return $this->returnExceptionAsErrors($e, $request);            
-        } 
+        }         
         // Return the Response 
         return new ResponseStandard($response->getBody(), 'booking');
     }

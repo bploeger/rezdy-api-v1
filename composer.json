@@ -3,9 +3,9 @@
   "type": "library",
   "description": "A PHP wrapper for The Rezdy Booking API Ver. 1",
   "keywords": [
-    "Rezdy"
+    "rezdy"
   ],
-  "homepage": "",
+  "homepage": "https://github.com/bploeger/rezdy-api-v1",
   "support": {
     "issues": "https://github.com/bploeger/rezdy-api-v1/issues",
     "source": "https://github.com/bploeger/rezdy-api-v1"
@@ -37,14 +37,5 @@
     "psr-4": {
       "Tests\\": "tests/"
     }
-  },
-  "repositories": {
-      "dev-package": {
-        "type": "path",
-        "url": "c:/users/brad/documents/rezdy-api-v1/src/Rezdy",
-        "options": {
-          "symlink": true
-        }
-      }
-    }
+  } 
 }

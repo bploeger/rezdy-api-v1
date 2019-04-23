@@ -105,24 +105,25 @@ class RezdyAPI
 	/**
      * Class constructor
      * Registers the API key with the RezdyAPI class that will be used for all API calls.
+     * @param $apiKey
      * @param ClientInterface|null $client - GuzzleHttp Client
      */
 	public function __construct($apiKey, ClientInterface $client = null) {
         // Create a GuzzleHTTP Client if one is not passed   
         $client = $client ?: new Client();
         //Register the Service Handlers to the API object
-        $this->availability = new AvailabilityServices($apiKey, $client);
-        $this->bookings = new BookingServices($apiKey, $client);
-        $this->categories = new CategoryServices($apiKey, $client);
-        $this->companies = new CompanyServices($apiKey, $client);     
-        $this->customers = new CustomerServices($apiKey, $client);   
-        $this->extra = new ExtraServices($apiKey, $client);   
-        $this->manifest = new ManifestServices($apiKey, $client);   
-        $this->pickupList = new PickupListServices($apiKey, $client);   
-        $this->products = new ProductServices($apiKey, $client);
-        $this->rates = new RateServices($apiKey, $client);
-        $this->resources = new ResourceServices($apiKey, $client);
-        $this->rezdyConnect = new RezdyConnectServices($apiKey, $client);
-        $this->vouchers = new VoucherServices($apiKey, $client);
+        $this->availability     = new AvailabilityServices($apiKey, $client);
+        $this->bookings         = new BookingServices($apiKey, $client);
+        $this->categories       = new CategoryServices($apiKey, $client);
+        $this->companies        = new CompanyServices($apiKey, $client);     
+        $this->customers        = new CustomerServices($apiKey, $client);   
+        $this->extra            = new ExtraServices($apiKey, $client);   
+        $this->manifest         = new ManifestServices($apiKey, $client);   
+        $this->pickupList       = new PickupListServices($apiKey, $client);   
+        $this->products         = new ProductServices($apiKey, $client);
+        $this->rates            = new RateServices($apiKey, $client);
+        $this->resources        = new ResourceServices($apiKey, $client);
+        $this->rezdyConnect     = new RezdyConnectServices($apiKey, $client);
+        $this->vouchers         = new VoucherServices($apiKey, $client);
     }
 }

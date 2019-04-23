@@ -15,6 +15,7 @@ use Rezdy\Exceptions\RezdyException;
  */
 abstract class BaseRequest {
 	
+    protected $restrictedParams = [];
     protected $requiredParams = [];
     protected $optionalParams = [];
 
@@ -24,12 +25,12 @@ abstract class BaseRequest {
     protected $enumFields = [];
 
     // Sets parameter values
-    public function set($data, $key = null) {
+    public function set($data, string $key = null) {
          // Checks if passed item is an array
         if (is_array($data)) {
             // Recursively process the values
-            foreach ($data as $key => $value) {
-                $this->set($value, $key);
+            foreach ($data as $innerKey => $value) {
+                $this->set($value, $innerKey);
             }            
         } else {
             // Try set the data provided
@@ -73,12 +74,40 @@ abstract class BaseRequest {
         return $outputArray; 
     }
 
+    public function toRequest() {
+        $this->setError('The object is already a request.');
+        return $this;
+    }
+
     public function viewErrors() {
         if(is_set($this->error)) {
             return json_encode($this->error);
         } else {
             return '';
         }
+    }
+
+    public function extract(string $property, bool $clearProperty = true) {
+        $data = null;
+        if (property_exists($this, $property)) {
+            $data = $this->$property;
+            if ($clearProperty) {
+                unset($this->$property);
+            }
+        }                
+        return $data;
+    }  
+
+    public function clear($property) {
+        if (is_array($property)) {
+            foreach ($property as $item) {
+                $this->clear($item);
+            }
+        } else {
+            if (property_exists($this, $property)) {
+                unset($this->$property);
+            }   
+        }             
     }
 
     // Attached an item in the Request based on the class of item passed to the function
@@ -195,35 +224,40 @@ abstract class BaseRequest {
         }
     }
 
-    // Verifies the Resource Params
+     /**
+     * Verifies the request parameters and their type and cleans up the request by removing 
+     * any extra parameters.
+     * @param null
+     * @return void
+     */
     protected function verifyParams() {  
-        // Verify the Required Params and their type
-        foreach ($this->requiredParams as $param => $type) {            
-            // Verify The Resource has the required param
-            if(!isset($this->$param)) { 
+        // 
+        foreach (array_merge(   $this->requiredParams, 
+                                $this->optionalParams) as $param => $type) {            
+            // Verify the resource has the required param
+            if(array_key_exists($param, $this->requiredParams) && !isset($this->$param)) { 
                  $this->error[] = $param . ' is a required value';
             }
             $this->checkType($param, $type);
-        }
-        // Check for optional params and their type
-        foreach ($this->optionalParams as $param => $type) {            
-            // Check if the Resource has an optional param
-            if(isset($this->$param)) {      
-                // Check the param to ensure it is the valid type
-                $this->checkType($param, $type);
-            }                   
-        }
-
+        }        
         // Clean Up the Request
-        $allowed = array_merge($this->requiredParams, $this->optionalParams, $this->createMappingArray());
         foreach ($this as $key => $value) {            
-            if (!array_key_exists($key, $allowed)) {
+            if (! array_key_exists($key, array_merge( $this->requiredParams, 
+                                                      $this->optionalParams, 
+                                                      $this->createMappingArray(), 
+                                                      $this->restrictedParams))) {
                 unset($this->$key);
             }
-        }                 
+        }               
     }
-
-    protected function checkType($param, $type) {
+    /**
+     * Verifies the request parameters and their type and cleans up the request by removing 
+     * any extra parameters.
+     * @param string $param
+     * @param string $type 
+     * @return void
+     */
+    protected function checkType(string $param, string $type) {
         // Handle ranges
         $explode = explode('|', $type);
         $lookup = $explode[0];
