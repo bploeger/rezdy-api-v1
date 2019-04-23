@@ -15,7 +15,7 @@ class Validate {
                             'booking-modes'         =>  [   'NO_DATE','DATE_ENQUIRY','INVENTORY'                                              ],
                             
                             'credit-card-type'      =>  [   'VISA', 'MASTERCARD', 'AMEX', 'DINERS','DISCOVER', 'JCB'                          ],
-
+                            
                             'commission-type'       =>  [   'NET_RATE','PERCENT'                                                              ],
                             
                             'confirm-modes'         =>  [   'MANUAL','AUTOCONFIRM','MANUAL_THEN_AUTO','AUTO_THEN_MANUAL'                      ],
@@ -48,6 +48,8 @@ class Validate {
                                                             'CHARTER','EVENT','PASS','HOPONHOPOFF','GIFT_CARD','TRANSFER','LESSON',
                                                             'MERCHANDISE','CUSTOM'                                                            ],
 
+                            'qr-code-types'         =>  [   'INTERNAL', 'EXTERNAL'                                                            ],
+                            
                             'source'                =>  [   'ONLINE','INTERNAL','PARTNERS','COMMUNITY','MARKETPLACE','MARKETPLACE_PREF_RATE', 
                                                             'API'                                                                             ],
 
@@ -118,6 +120,8 @@ class Validate {
                                                             'SUITABILITY'    => ['ANY_WEATHER','DAY_TIME','NIGHT_TIME','FAMILY','GIFT_VOUCHER',
                                                                                  'GROUPS','ONLY_ADULTS','ONLY_MEN','ONLY_WOMEN','SCHOOLS'      ],
                                                                                                                                                ],
+
+                            'tax-types'             =>  [   'PERCENT', 'FIXED_PER_QUANTITY', 'FIXED_PER_ORDER', 'FIXED_PER_DURATION'           ],
 
                             'title'                 =>  [   'MR','MS','MRS','MISS'                                                             ], 
 

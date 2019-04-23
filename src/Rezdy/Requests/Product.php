@@ -23,19 +23,34 @@ class Product extends BaseRequest implements RequestInterface {
 		$this->optionalParams = [	'additionalInformation'			=>	'string',
 									'advertisedPrice'				=>	'numeric',
 									'bookingMode'					=>	'enum.booking-modes',
+									'cancellationPolicyDays' 		=>  'integer',
 									'charter'						=>	'boolean',
+									'commissionIncludesExtras'		=>  'boolean',
 									'confirmMode'					=>  'enum.confirm-modes',
 									'confirmModeMinParticipants'	=> 	'integer',
+									'currency'						=>  'enum.currency-types',
 									'internalCode'					=>	'string',
+									'generalTerms'					=> 	'string',
 									'languages'						=> 	'array-of-string',
 									'minimumNoticeMinutes'			=>	'integer',
+									'maxCommissionNetRate'			=>	'numeric',
+									'maxCommissionPercent'			=>	'numeric',
+									'minimumNoticeMinutes'			=>	'integer',
+									'productCode'					=>	'string',
 									'pickupId'						=>	'integer',
+									'qrCodeType'					=>	'enum.qr-code-types',
 									'quantityRequired'				=>	'boolean',
 									'quantityRequiredMax'			=>	'integer',
 									'quantityRequiredMin'			=>	'integer',
+									'supplierAlias'					=>  'string',
+									'supplierId'					=>  'integer',
+									'supplierName'					=>	'string',
+									'tags'							=> 	'tag-or-array',
 									'terms'							=>	'string',
+									'timezone'						=>  'string',
 									'unitLabel'						=>	'string',
 									'unitLabelPlural'				=>	'string',
+									'waitListingEnabled'			=>	'boolean',
 									'xeroAccount'					=>	'string',
 								];
 
@@ -46,7 +61,11 @@ class Product extends BaseRequest implements RequestInterface {
 		//Sets the class mapping for multiple item sets to the request 				
 		$this->addClassMap  = 	[	'Rezdy\Requests\Objects\Field'				=> 'bookingFields',
 									'Rezdy\Requests\Extra'						=> 'extras',
-									'Rezdy\Requests\Objects\PriceOption'		=> 'priceOptions', 
+									'Rezdy\Requests\Objects\Image'				=> 'images'
+									'Rezdy\Requests\Objects\PriceOption'		=> 'priceOptions',
+									'Rezdy\Requests\Objects\SeoTag'				=> 'productSeoTags',
+									'Rezdy\Requests\Objects\Tax'				=> 'taxes', 
+									'Rezdy\Requests\Objects\Video'				=> 'videos', 
 								];	
 
 		if (is_array($params)) {

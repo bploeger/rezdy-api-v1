@@ -12,22 +12,24 @@ use Rezdy\Requests\BaseRequest;
 class BookingItem extends BaseRequest {
 
 		public function __construct($params = '') {
-			
+
+			$this->restrictedParams = [	"extras"			=> "array",
+										"participants"		=> "array",	];
+
 			//Set the optional properties of the object and the required type
-			$this->optionalParams = [		"amount"			=> "numeric",
-            								"endTime"			=> "ISO8601",
-            								"endTimeLocal"		=> "date-time",   
-            								"productCode"		=> "string",
-           									"productName"		=> "string", 
-           									"startTime"			=> "ISO8601",
-            								"startTimeLocal"	=> "date-time",
-            								"subtotal"			=> "numeric",
-            								"totalItemTax"		=> "numeric",
-            								"totalQuantity"		=> "integer",
-            								"transferFrom"		=> "string",
-            								"transferReturn"	=> "boolean",
-            								"transferTo"		=> "string",       								
-									];
+			$this->optionalParams = [	"amount"			=> "numeric",
+            							"endTime"			=> "ISO8601",
+            							"endTimeLocal"		=> "date-time",   
+            							"productCode"		=> "string",
+           								"productName"		=> "string", 
+           								"startTime"			=> "ISO8601",
+            							"startTimeLocal"	=> "date-time",
+            							"subtotal"			=> "numeric",
+            							"totalItemTax"		=> "numeric",
+            							"totalQuantity"		=> "integer",
+            							"transferFrom"		=> "string",
+            							"transferReturn"	=> "boolean",
+            							"transferTo"		=> "string" ];
 
 			// Sets the class mapping for single set items to the request 
 			$this->setClassMap =	[ 	'Rezdy\Requests\Objects\PickupLocation'		=> 'pickupLocation'
@@ -38,8 +40,12 @@ class BookingItem extends BaseRequest {
 										'Rezdy\Requests\Objects\BookingItemQuantity'=> 'quantities'
 									];	
 
+			$this->extras = [];
+			$this->participants = [];
 			if (is_array($params)) {
 				$this->buildFromArray($params);
-			}	
+			}
+
+
 		}		
 }
