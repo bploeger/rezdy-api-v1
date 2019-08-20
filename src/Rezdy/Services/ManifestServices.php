@@ -128,7 +128,7 @@ class ManifestServices extends BaseService {
      * @return Rezdy\Responses\ResponseStandard
      * @throws Rezdy\Requests\Manifest    
      */
-    public function getOrderItemCheckIn(Manifest $manifest) {
+    public function getOrderItemCheckIn(Manifest $request) {
         // Build the request URL
         $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.manifest_check_in_item');
         // Verify the Manifest request object.
