@@ -245,7 +245,7 @@ abstract class BaseRequest {
             if (! array_key_exists($key, array_merge( $this->requiredParams, 
                                                       $this->optionalParams, 
                                                       $this->createMappingArray(), 
-                                                      $this->restrictedParams))) {
+                                                      $this->restrictedParams ?? []))) {
                 unset($this->$key);
             }
         }               
